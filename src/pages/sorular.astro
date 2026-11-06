@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SayfaBasi from '../components/SayfaBasi.astro';
+import SoruListesi from '../components/SoruListesi.astro';
+import { siraliYayindakiler, ayar, u } from '../lib/site';
+const sorular = await siraliYayindakiler('sorular');
+const site = await ayar('site');
+---
+<Layout baslik="Soru-Cevap" aciklama="Hadis ve İslam düşüncesine dair sık sorulan sorulara kısa ve kaynaklı cevaplar.">
+  <SayfaBasi baslik="Soru-Cevap" altBaslik="Sık sorulan sorulara kısa ve kaynaklı cevaplar." yol={[{ ad: 'Ana sayfa', href: u('/') }, { ad: 'Soru-Cevap' }]} />
+  <section class="bolum">
+    <div class="kap" style="max-width: 900px">
+      {sorular.length === 0 ? <p class="bos-not">Cevaplar yakında eklenecek.</p> : <SoruListesi sorular={sorular} />}
+      {site.eposta && <p style="margin-top: 40px; text-align: center"><a class="dugme koyu-d" href={`mailto:${site.eposta}?subject=Soru`}>Bir soru gönderin</a></p>}
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,24 @@
+---
+import { siraliYayindakiler, ayar, u } from '../../lib/site';
+import SoruListesi from '../SoruListesi.astro';
+interface Props { b: any }
+const { b } = Astro.props;
+const site = await ayar('site');
+const sorular = await siraliYayindakiler('sorular');
+---
+{sorular.length > 0 && (
+  <section class="bolum acik" aria-labelledby="sorular">
+    <div class="kap sorular-izgara">
+      <div style="display: flex; flex-direction: column; gap: 14px" data-belir>
+        {b.ustBaslik && <span class="ust-baslik">{b.ustBaslik}</span>}
+        {b.baslik && <h2 class="b2" id="sorular">{b.baslik}</h2>}
+        {b.aciklama && <p class="giris">{b.aciklama}</p>}
+        <div style="display: flex; flex-wrap: wrap; gap: 8px 24px">
+          {sorular.length > 4 && <a class="ok-baglanti" href={u('/sorular/')}>Tüm sorular →</a>}
+          {site.eposta && <a class="ok-baglanti" href={`mailto:${site.eposta}?subject=Soru`}>Bir soru gönderin →</a>}
+        </div>
+      </div>
+      <SoruListesi sorular={sorular.slice(0, 4)} />
+    </div>
+  </section>
+)}

@@ -1,0 +1,34 @@
+---
+import { yazilarSirali, u, tarihYaz, okumaSuresi } from '../../lib/site';
+import BolumBasi from '../BolumBasi.astro';
+interface Props { b: any }
+const { b } = Astro.props;
+const yazilar = await yazilarSirali();
+const y = yazilar[0];
+---
+{y && (
+  <section class="bolum" aria-labelledby="son-yazi">
+    <div class="kap">
+      <BolumBasi id="son-yazi" ust={b.ustBaslik} baslik={b.baslik} aciklama={b.aciklama} baglanti={yazilar.length > 1 ? { href: u('/yazilar/'), ad: 'Tüm yazılar' } : undefined} />
+      <article class="yazi-kart" data-belir>
+        <div class="yazi-kart-gorsel">
+          <figure class="alinti-kutu">
+            <svg width="56" height="20" viewBox="0 0 56 20" aria-hidden="true"><path d="M0 10 H20 M36 10 H56" stroke="#D4AF5A" stroke-width="1"></path><path d="M28 2 L34 10 L28 18 L22 10 Z" fill="none" stroke="#D4AF5A" stroke-width="1.4"></path><circle cx="28" cy="10" r="2" fill="#D4AF5A"></circle></svg>
+            <blockquote>“{y.data.alinti || y.data.baslik}”</blockquote>
+            {y.data.alintiKaynak && <figcaption>{y.data.alintiKaynak}</figcaption>}
+          </figure>
+        </div>
+        <div class="yazi-kart-metin">
+          <div class="meta">
+            <span class="etiket dolu">{y.data.tur}</span>
+            {y.data.kategori && <span class="etiket bos">{y.data.kategori}</span>}
+            <span>{okumaSuresi(y.body ?? '')} dk okuma{y.data.tarih && ` · ${tarihYaz(y.data.tarih)}`}</span>
+          </div>
+          <h3><a href={u(`/yazilar/${y.id}/`)}>{y.data.baslik}</a></h3>
+          {y.data.ozet && <p>{y.data.ozet}</p>}
+          <div><a class="dugme koyu-d" href={u(`/yazilar/${y.id}/`)}>Yazıyı oku</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+)}

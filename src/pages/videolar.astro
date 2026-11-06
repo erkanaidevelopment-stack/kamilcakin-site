@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SayfaBasi from '../components/SayfaBasi.astro';
+import VideoKart from '../components/VideoKart.astro';
+import { siraliYayindakiler, ayar, u } from '../lib/site';
+const videolar = await siraliYayindakiler('videolar');
+const site = await ayar('site');
+const seriler = [...new Set(videolar.map((v) => v.data.seri || 'Diğer videolar'))];
+---
+<Layout baslik="Videolar" aciklama="Dersler, konuşmalar ve video serileri.">
+  <SayfaBasi baslik="Videolar" altBaslik="Dersler, konuşmalar ve video serileri." yol={[{ ad: 'Ana sayfa', href: u('/') }, { ad: 'Videolar' }]}>
+    {site.youtube && <div data-giris><a class="dugme cizgi" href={site.youtube} target="_blank" rel="noopener">YouTube kanalı</a></div>}
+  </SayfaBasi>
+  <section class="bolum">
+    <div class="kap" style="display: flex; flex-direction: column; gap: 64px">
+      {videolar.length === 0 ? <p class="bos-not">Videolar yakında eklenecek.</p> : seriler.map((s) => (
+        <div>
+          {seriler.length > 1 && <h2 class="b2" style="margin-bottom: 28px" data-belir>{s}</h2>}
+          <div class="izgara-3">
+            {videolar.filter((v) => (v.data.seri || 'Diğer videolar') === s).map((v) => <VideoKart v={v} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>

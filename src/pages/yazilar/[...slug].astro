@@ -1,0 +1,73 @@
+---
+import { render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SayfaBasi from '../../components/SayfaBasi.astro';
+import { yazilarSirali, ayar, u, tarihYaz, okumaSuresi } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const yazilar = await yazilarSirali();
+  return yazilar.map((y) => ({ params: { slug: y.id }, props: { y } }));
+}
+const { y } = Astro.props as { y: any };
+const { Content, headings } = await render(y);
+const site = await ayar('site');
+const basliklar = headings.filter((h) => h.depth === 2 && h.slug !== 'footnote-label');
+const sure = okumaSuresi(y.body ?? '');
+const soyad = String(site.ad ?? '').trim().split(/\s+/).pop();
+const adlar = String(site.ad ?? '').trim().split(/\s+/).slice(0, -1).join(' ');
+const adres = new URL(u(`/yazilar/${y.id}/`), Astro.site).href;
+const atif = `${soyad}, ${adlar}. “${y.data.baslik}”. ${new URL(Astro.site!).host}${y.data.tarih ? `, ${tarihYaz(y.data.tarih)}` : ''}. ${adres}`;
+const digerleri = (await yazilarSirali()).filter((x) => x.id !== y.id).slice(0, 3);
+---
+<Layout baslik={y.data.baslik} aciklama={y.data.ozet} tur="article">
+  <SayfaBasi baslik={y.data.baslik} altBaslik={y.data.ozet}
+    yol={[{ ad: 'Yazılar', href: u('/yazilar/') }, ...(y.data.kategori ? [{ ad: y.data.kategori }] : [])]}>
+    <div class="meta" data-giris>
+      <span>{site.unvan} {site.ad}</span>
+      {y.data.tarih && <><span aria-hidden="true">·</span><span>{tarihYaz(y.data.tarih)}</span></>}
+      <span aria-hidden="true">·</span><span>{sure} dk okuma</span>
+    </div>
+  </SayfaBasi>
+
+  <div class="kap okuma">
+    <aside aria-label="Yazı araçları">
+      {basliklar.length > 0 && (
+        <>
+          <span class="k">İçindekiler</span>
+          {basliklar.map((h) => <a href={`#${h.slug}`} style="text-decoration: none; font-size: 14px; color: var(--metin-2); padding: 6px 0">{h.text}</a>)}
+        </>
+      )}
+      <span class="k">Okuma</span>
+      <div class="ilerleme" aria-hidden="true"><div data-ilerleme></div></div>
+      <span style="font-size: 12px; color: var(--metin-3)" data-ilerleme-yazi>%0 okundu</span>
+      <button class="dugme koyu-d ince" style="border: 0" type="button" data-kopyala={adres}>Bağlantıyı kopyala</button>
+      {y.data.pdf && <a class="dugme ince" href={u(y.data.pdf)} target="_blank" rel="noopener">PDF indir</a>}
+    </aside>
+
+    <article class="metin">
+      <Content />
+      <div class="ayrac" aria-hidden="true"><span></span><svg width="56" height="20" viewBox="0 0 56 20"><path d="M28 2 L34 10 L28 18 L22 10 Z" fill="none" stroke="#B8912F" stroke-width="1.4"></path><circle cx="28" cy="10" r="2" fill="#B8912F"></circle></svg><span></span></div>
+      <div class="atif">
+        <span class="k">Bu yazıya atıf</span>
+        <p>{atif}</p>
+        <div><button class="dugme koyu-d ince" style="border: 0" type="button" data-kopyala={atif}>Atıfı kopyala</button></div>
+      </div>
+    </article>
+  </div>
+
+  {digerleri.length > 0 && (
+    <section class="bolum acik">
+      <div class="kap">
+        <h2 class="b2" style="margin-bottom: 32px">Diğer yazılar</h2>
+        <div class="yazi-liste">
+          {digerleri.map((d) => (
+            <a class="yazi-oge" href={u(`/yazilar/${d.id}/`)} data-belir>
+              <h2>{d.data.baslik}</h2>
+              {d.data.ozet && <p>{d.data.ozet}</p>}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>

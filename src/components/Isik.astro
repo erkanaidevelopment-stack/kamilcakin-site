@@ -1,0 +1,23 @@
+---
+// Bölüm arka planına yumuşak altın ışık hüzmeleri ekler.
+interface Props { yon?: 'sol' | 'sag' | 'orta'; zerre?: boolean }
+const { yon = 'sol', zerre = false } = Astro.props;
+const aci = yon === 'sag' ? 28 : yon === 'orta' ? -10 : -28;
+const konum = yon === 'sag' ? 'right' : 'left';
+const h = yon === 'orta'
+  ? [{ p: 44, w: 120, b: 16 }, { p: 54, w: 50, b: 8 }, { p: 36, w: 180, b: 26 }]
+  : [{ p: 8, w: 160, b: 18 }, { p: 18, w: 60, b: 9 }, { p: 28, w: 200, b: 28 }];
+---
+<div class="isik" aria-hidden="true">
+  <div class="parilti" style={yon === 'sag' ? 'background: radial-gradient(ellipse 50% 50% at 85% -10%, rgba(255,214,140,.26), rgba(255,214,140,0) 70%)' : yon === 'orta' ? 'background: radial-gradient(ellipse 45% 70% at 50% -20%, rgba(255,214,140,.30), rgba(255,214,140,0) 70%)' : undefined}></div>
+  {h.map((x) => (
+    <div class="h" style={`${konum}: ${x.p}%; width: ${x.w}px; transform: rotate(${aci}deg); filter: blur(${x.b}px)`}></div>
+  ))}
+  {zerre && (
+    <>
+      <span class="zerre" style="top: 30%; left: 28%; width: 4px; height: 4px"></span>
+      <span class="zerre" style="top: 52%; left: 40%; width: 3px; height: 3px; animation-delay: -4s"></span>
+      <span class="zerre" style="top: 22%; left: 47%; width: 2px; height: 2px; animation-delay: -8s"></span>
+    </>
+  )}
+</div>

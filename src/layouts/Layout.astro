@@ -1,0 +1,64 @@
+---
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource/cormorant-garamond/600.css';
+import '@fontsource/cormorant-garamond/700.css';
+import '@fontsource/cormorant-garamond/500-italic.css';
+import '@fontsource/cormorant-garamond/600-italic.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/600.css';
+import '@fontsource/source-serif-4/400-italic.css';
+import '@fontsource/amiri/400.css';
+import '@fontsource/amiri/700.css';
+import 'lenis/dist/lenis.css';
+import '../styles/global.css';
+import Ust from '../components/Ust.astro';
+import Alt from '../components/Alt.astro';
+import { ayar, u } from '../lib/site';
+
+interface Props { baslik?: string; aciklama?: string; gorsel?: string; tur?: 'website' | 'article'; }
+const site = await ayar('site');
+const ana = await ayar('anasayfa');
+const tamAd = `${site.unvan ?? ''} ${site.ad ?? ''}`.trim();
+const { baslik, aciklama = site.siteAciklamasi, gorsel = ana.gorsel, tur = 'website' } = Astro.props;
+const sayfaBasligi = baslik ? `${baslik} | ${tamAd}` : `${tamAd} | ${site.uzmanlik ?? ''}`.replace(/ \| $/, '');
+const kanonik = new URL(Astro.url.pathname, Astro.site);
+const gorselTam = gorsel ? new URL(u(gorsel), Astro.site).href : undefined;
+---
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{sayfaBasligi}</title>
+  <meta name="description" content={aciklama} />
+  <link rel="canonical" href={kanonik} />
+  <meta name="theme-color" content="#0E1513" />
+  <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
+  <meta property="og:type" content={tur} />
+  <meta property="og:locale" content="tr_TR" />
+  <meta property="og:title" content={sayfaBasligi} />
+  <meta property="og:description" content={aciklama} />
+  <meta property="og:url" content={kanonik} />
+  {gorselTam && <meta property="og:image" content={gorselTam} />}
+  <meta name="twitter:card" content="summary_large_image" />
+  <script is:inline>
+    document.documentElement.classList.add('js');
+    setTimeout(function () { document.documentElement.classList.add('belir-hazir'); }, 2500);
+  </script>
+</head>
+<body>
+  <a class="atla" href="#icerik">İçeriğe geç</a>
+  <Ust />
+  <main id="icerik">
+    <slot />
+  </main>
+  <Alt />
+  <script>
+    import '../scripts/hareket.ts';
+  </script>
+</body>
+</html>

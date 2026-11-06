@@ -1,0 +1,24 @@
+---
+import { ayar } from '../../lib/site';
+import Isik from '../Isik.astro';
+import Sus from '../Sus.astro';
+interface Props { b: any }
+const { b } = Astro.props;
+const site = await ayar('site');
+const baglanti = site.bultenBaglanti;
+const eposta = site.eposta;
+---
+{(baglanti || eposta) && (
+  <section class="koyu bulten" aria-labelledby="bulten">
+    <Isik yon="orta" />
+    <div class="icerik" data-belir>
+      <Sus genislik={70} />
+      <h2 id="bulten">{baglanti ? b.baslik : 'İletişim'}</h2>
+      <p>{baglanti ? b.aciklama : 'Akademik çalışmalarınız, sorularınız ve davetleriniz için e-posta gönderebilirsiniz.'}</p>
+      <div class="dugmeler" style="justify-content: center">
+        {baglanti && <a class="dugme altin" href={baglanti} target="_blank" rel="noopener">Bültene abone ol</a>}
+        {eposta && <a class:list={['dugme', baglanti ? 'cizgi' : 'altin']} href={`mailto:${eposta}`}>{eposta}</a>}
+      </div>
+    </div>
+  </section>
+)}

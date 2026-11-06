@@ -1,0 +1,17 @@
+---
+import { render } from 'astro:content';
+interface Props { sorular: any[] }
+const { sorular } = Astro.props;
+const islenmis = await Promise.all(sorular.map(async (s) => ({ s, Icerik: (await render(s)).Content })));
+---
+<div>
+  {islenmis.map(({ s, Icerik }, i) => (
+    <details class="soru" open={i === 0} data-belir>
+      <summary>
+        <span>{s.data.soru}</span>
+        <span class="isaret" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
+      </summary>
+      <div class="cevap"><Icerik /></div>
+    </details>
+  ))}
+</div>

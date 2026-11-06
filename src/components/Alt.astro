@@ -1,0 +1,28 @@
+---
+import { ayar, u } from '../lib/site';
+const site = await ayar('site');
+const yil = new Date().getFullYear();
+---
+<footer class="alt">
+  <div class="kap">
+    <div class="ust-sira">
+      <div>
+        <span class="logo-yazi"><small>{site.unvan}</small><span>{site.ad}</span></span>
+        <p>{site.altBilgiMetni}</p>
+      </div>
+      <nav aria-label="Alt menü">
+        <a href={u('/yazilar/')}>Yazılar</a>
+        <a href={u('/yayinlar/')}>Yayınlar</a>
+        <a href={u('/kitaplar/')}>Kitaplar</a>
+        <a href={u('/videolar/')}>Videolar</a>
+        <a href={u('/sorular/')}>Soru-Cevap</a>
+        <a href={u('/hakkinda/')}>Hakkında</a>
+        {site.youtube && <a href={site.youtube} target="_blank" rel="noopener">YouTube</a>}
+      </nav>
+    </div>
+    <div class="alt-sira">
+      <span>© {yil} {site.unvan} {site.ad}. Tüm hakları saklıdır.</span>
+      {site.eposta && <a href={`mailto:${site.eposta}`}>{site.eposta}</a>}
+    </div>
+  </div>
+</footer>

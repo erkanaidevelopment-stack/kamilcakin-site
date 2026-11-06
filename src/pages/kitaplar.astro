@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SayfaBasi from '../components/SayfaBasi.astro';
+import KitapKart from '../components/KitapKart.astro';
+import Klasikler from '../components/bolumler/Klasikler.astro';
+import { siraliYayindakiler, ayar, u } from '../lib/site';
+const kitaplar = await siraliYayindakiler('kitaplar');
+const ana = await ayar('anasayfa');
+const site = await ayar('site');
+const kb = (ana.bolumler ?? []).find((b: any) => b.bolum === 'klasikler') ?? { ustBaslik: 'Klasik kaynaklar', baslik: 'İslam düşüncesinin temel eserleri' };
+---
+<Layout baslik="Kitaplar" aciklama={`${site.unvan} ${site.ad}'ın kitapları ve İslam düşüncesinin temel klasik eserleri.`}>
+  <SayfaBasi baslik="Kitaplar" altBaslik={`${site.unvan} ${site.ad}'ın kitapları ve çalışmalarının dayandığı klasik eserler.`} yol={[{ ad: 'Ana sayfa', href: u('/') }, { ad: 'Kitaplar' }]} />
+  <section class="bolum">
+    <div class="kap">
+      <div class="bolum-bas orta" data-belir><div><span class="ust-baslik">Eserleri</span><h2 class="b2">{site.unvan} {site.ad}'ın kitapları</h2></div></div>
+      {kitaplar.length === 0
+        ? <p class="bos-not">Kitaplar yakında eklenecek.</p>
+        : <div class="kitap-dizi">{kitaplar.map((k) => <KitapKart k={k} />)}</div>}
+    </div>
+  </section>
+  <div id="klasikler"><Klasikler b={kb} tumu /></div>
+</Layout>

@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SayfaBasi from '../../components/SayfaBasi.astro';
+import YayinListesi from '../../components/YayinListesi.astro';
+import { yayinlarSirali, ayar, u } from '../../lib/site';
+const yayinlar = await yayinlarSirali();
+const site = await ayar('site');
+const profiller = [site.scholar && 'Google Scholar', site.orcid && 'ORCID'].filter(Boolean).join(' ve ');
+---
+<Layout baslik="Akademik Yayınlar" aciklama="Hakemli dergilerde yayımlanmış makaleler, kitap bölümleri ve bildiriler.">
+  <SayfaBasi baslik="Akademik Yayınlar" altBaslik="Hakemli dergilerde yayımlanmış makaleler, kitap bölümleri ve bildiriler." yol={[{ ad: 'Ana sayfa', href: u('/') }, { ad: 'Yayınlar' }]} />
+  <section class="bolum">
+    <div class="kap">
+      {yayinlar.length === 0 ? <p class="bos-not">Henüz yayın eklenmedi.</p> : (
+        <YayinListesi yayinlar={yayinlar} altMetin={`Toplam ${yayinlar.length} yayın${profiller ? ` · tam liste için ${profiller} profillerine bakabilirsiniz` : ''}`} />
+      )}
+    </div>
+  </section>
+</Layout>

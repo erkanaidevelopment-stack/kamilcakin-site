@@ -1,0 +1,32 @@
+---
+import { youtubeId } from '../lib/site';
+interface Props { v: any }
+const { v } = Astro.props;
+const id = youtubeId(v.data.youtube);
+---
+{id && (
+  <div class="video" data-belir>
+    <div class="video-kutu">
+      <button type="button" data-youtube={id} data-baslik={v.data.baslik} aria-label={`Videoyu oynat: ${v.data.baslik}`}>
+        <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" />
+        <span class="oynat"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l12 7-12 7z" fill="#1A140A"></path></svg></span>
+      </button>
+    </div>
+    {v.data.seri && <span class="seri">{v.data.seri}</span>}
+    <h3>{v.data.baslik}</h3>
+    {v.data.aciklama && <p>{v.data.aciklama}</p>}
+  </div>
+)}
+<script>
+  // Video yalnızca tıklanınca yüklenir: sayfa hızlı açılır, YouTube çerezleri baştan yüklenmez.
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-youtube]');
+    if (!btn) return;
+    const f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.youtube}?autoplay=1&rel=0`;
+    f.title = btn.dataset.baslik ?? 'YouTube videosu';
+    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    f.allowFullscreen = true;
+    btn.replaceWith(f);
+  });
+</script>

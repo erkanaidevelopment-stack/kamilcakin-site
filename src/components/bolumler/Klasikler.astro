@@ -1,0 +1,36 @@
+---
+import { siraliYayindakiler, u } from '../../lib/site';
+import BolumBasi from '../BolumBasi.astro';
+import Isik from '../Isik.astro';
+import Raf from '../Raf.astro';
+interface Props { b: any; tumu?: boolean }
+const { b, tumu = false } = Astro.props;
+const eserler = await siraliYayindakiler('klasikler');
+const kartlar = tumu ? eserler : eserler.filter((e) => e.data.oneCikan);
+---
+{eserler.length > 0 && (
+  <section class="koyu klasikler" aria-labelledby="klasikler">
+    <Isik yon="sol" />
+    <div class="kap" style="position: relative; z-index: 1">
+      <BolumBasi id="klasikler" orta ust={b.ustBaslik} baslik={b.baslik} aciklama={b.aciklama} />
+    </div>
+    <div data-belir><Raf eserler={eserler} /></div>
+    <div class="kap" style="position: relative; z-index: 1">
+      <div class="klasik-kartlar">
+        {kartlar.map((e) => (
+          <div class="klasik" data-belir>
+            <span class="ar" lang="ar" dir="rtl">{e.data.arapca}</span>
+            <b>{e.data.baslik}</b>
+            <span>{e.data.muellif} · {e.data.vefat}</span>
+            {tumu && e.data.aciklama && <p>{e.data.aciklama}</p>}
+          </div>
+        ))}
+      </div>
+      {!tumu && (
+        <div class="dugmeler" style="justify-content: center; margin-top: 40px">
+          <a class="dugme cizgi" href={u('/kitaplar/#klasikler')}>Tüm klasik eserler</a>
+        </div>
+      )}
+    </div>
+  </section>
+)}

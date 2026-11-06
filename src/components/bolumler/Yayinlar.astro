@@ -1,0 +1,19 @@
+---
+import { yayinlarSirali, u } from '../../lib/site';
+import BolumBasi from '../BolumBasi.astro';
+import YayinListesi from '../YayinListesi.astro';
+interface Props { b: any }
+const { b } = Astro.props;
+const hepsi = await yayinlarSirali();
+const gosterilen = hepsi.slice(0, 6);
+---
+{hepsi.length > 0 && (
+  <section class="bolum" aria-labelledby="yayinlar">
+    <div class="kap">
+      <BolumBasi id="yayinlar" ust={b.ustBaslik} baslik={b.baslik} aciklama={b.aciklama} />
+      <YayinListesi yayinlar={gosterilen} suzgec={false}
+        altMetin={`Son ${gosterilen.length} yayın gösteriliyor · toplam ${hepsi.length}`}
+        altBaglanti={{ href: u('/yayinlar/'), ad: 'Tüm yayınlar' }} />
+    </div>
+  </section>
+)}

@@ -1,0 +1,36 @@
+---
+import { ayar, u } from '../../lib/site';
+interface Props { b: any; tam?: boolean }
+const { b, tam = false } = Astro.props;
+const site = await ayar('site');
+const h = await ayar('hakkinda');
+const bilgiler: { etiket: string; deger: string }[] = h.kisaBilgiler ?? [];
+const linkler = [
+  site.ozgecmisPdf && { ad: 'Özgeçmiş (PDF)', href: u(site.ozgecmisPdf), ana: true },
+  site.orcid && { ad: 'ORCID', href: site.orcid },
+  site.scholar && { ad: 'Google Scholar', href: site.scholar },
+  site.yokAkademik && { ad: 'YÖK Akademik', href: site.yokAkademik },
+  site.youtube && { ad: 'YouTube', href: site.youtube },
+].filter(Boolean) as { ad: string; href: string; ana?: boolean }[];
+---
+<section class="bolum" aria-labelledby="hakkinda">
+  <div class="kap hakkinda-izgara">
+    {h.portre && (
+      <div class="kemer" data-belir><div><img src={u(h.portre)} alt={h.portreAciklamasi ?? `${site.unvan} ${site.ad}`} loading="lazy" /></div></div>
+    )}
+    <div class="hakkinda-metin" data-belir>
+      {b?.ustBaslik && <span class="ust-baslik">{b.ustBaslik}</span>}
+      <h2 id="hakkinda"><small>{site.unvan}</small><span>{site.ad}</span></h2>
+      {h.ozet && <p>{h.ozet}</p>}
+      {bilgiler.length > 0 && (
+        <dl class="bilgiler">
+          {bilgiler.map((x) => <div><dt>{x.etiket}</dt><dd>{x.deger}</dd></div>)}
+        </dl>
+      )}
+      <div class="dugmeler" style="gap: 10px">
+        {!tam && <a class="dugme koyu-d" href={u('/hakkinda/')}>Özgeçmişin tamamı</a>}
+        {linkler.map((l) => <a class:list={['dugme', l.ana ? 'koyu-d' : 'ince']} href={l.href} target="_blank" rel="noopener">{l.ad}</a>)}
+      </div>
+    </div>
+  </div>
+</section>

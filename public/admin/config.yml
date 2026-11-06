@@ -1,0 +1,269 @@
+# Prof. Dr. Kamil Çakın — Yönetim paneli ayarları (Sveltia CMS)
+# Panel adresi: https://kamilcakin.com/admin/
+# Giriş: "Sign In Using Access Token" ile GitHub kişisel erişim anahtarı.
+
+backend:
+  name: github
+  repo: GITHUB_KULLANICI/kamilcakin-site
+  branch: main
+  commit_messages:
+    create: "{{collection}}: “{{slug}}” eklendi"
+    update: "{{collection}}: “{{slug}}” güncellendi"
+    delete: "{{collection}}: “{{slug}}” silindi"
+    uploadMedia: "Dosya yüklendi: {{path}}"
+    deleteMedia: "Dosya silindi: {{path}}"
+
+site_url: https://kamilcakin.com
+display_url: https://kamilcakin.com
+media_folder: public/uploads
+public_folder: /uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+editor:
+  preview: false
+
+collections:
+  # ------------------------------------------------------------------ YAZILAR
+  - name: yazilar
+    label: "Yazılar"
+    label_singular: "Yazı"
+    description: "Başyazılar, denemeler ve değerlendirmeler. En yeni tarihli yazı ana sayfada gösterilir."
+    folder: src/content/yazilar
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: baslik
+    slug: "{{baslik}}"
+    summary: "{{baslik}} · {{tarih}}"
+    sortable_fields: [tarih, baslik]
+    fields:
+      - { label: "Başlık", name: baslik, widget: string }
+      - { label: "Kısa özet", name: ozet, widget: text, required: false, hint: "Listelerde ve arama motorlarında görünen 1-2 cümle." }
+      - { label: "Yayın tarihi", name: tarih, widget: datetime, format: "YYYY-MM-DD", time_format: false, required: false }
+      - { label: "Tür", name: tur, widget: select, default: "Başyazı", options: ["Başyazı", "Deneme", "Değerlendirme", "Duyuru"] }
+      - { label: "Kategori", name: kategori, widget: string, required: false, hint: "Örn: İbadetler, Hadis, Güncel" }
+      - { label: "Öne çıkan alıntı", name: alinti, widget: string, required: false, hint: "Ana sayfadaki yazı kartında büyük harflerle görünür." }
+      - { label: "Alıntının kaynağı", name: alintiKaynak, widget: string, required: false }
+      - { label: "PDF sürümü", name: pdf, widget: file, required: false }
+      - &yayinda { label: "Sitede yayında", name: yayinda, widget: boolean, default: true, hint: "Kapatırsanız kayıt silinmez, yalnızca sitede gizlenir." }
+      - { label: "Metin", name: body, widget: markdown, hint: "Ara başlık için 'Heading 2' kullanın; içindekiler listesi bunlardan otomatik oluşur." }
+
+  # ------------------------------------------------------------------ YAYINLAR
+  - name: yayinlar
+    label: "Akademik yayınlar"
+    label_singular: "Yayın"
+    description: "Makaleler, kitap bölümleri ve bildiriler. Yıla göre en yeni üstte sıralanır."
+    folder: src/content/yayinlar
+    create: true
+    extension: yml
+    format: yaml
+    identifier_field: baslik
+    slug: "{{baslik}}"
+    summary: "{{yil}} · {{baslik}}"
+    sortable_fields: [yil, baslik]
+    fields:
+      - { label: "Başlık", name: baslik, widget: string }
+      - { label: "Yıl", name: yil, widget: number, value_type: int }
+      - { label: "Künye", name: kunye, widget: string, hint: "Dergi / kitap adı, cilt, sayı, sayfa. Örn: Dini Araştırmalar Dergisi, Cilt 8, Sayı 24" }
+      - { label: "Tür", name: tur, widget: select, default: "Makale", options: ["Makale", "Kitap bölümü", "Bildiri", "Kitap", "Çeviri", "Ansiklopedi maddesi"] }
+      - { label: "Konu", name: konu, widget: select, options: ["Buhârî", "Hadis Tarihi", "Hadis Usulü", "Hadis Karşıtlığı", "Kadın", "Fiten", "Din ve Toplum", "Dinler Tarihi", "Diğer"], hint: "Yayınlar sayfasındaki konu düğmeleri buradan oluşur." }
+      - { label: "Özet", name: ozet, widget: text, required: false }
+      - { label: "PDF dosyası", name: pdf, widget: file, required: false }
+      - { label: "Çevrimiçi bağlantı (DergiPark vb.)", name: baglanti, widget: string, required: false }
+      - *yayinda
+
+  # ------------------------------------------------------------------ KİTAPLAR
+  - name: kitaplar
+    label: "Kitaplar"
+    label_singular: "Kitap"
+    description: "Prof. Dr. Kamil Çakın'ın kitapları. Kapak görseli yoksa altın çerçeveli bir kapak otomatik çizilir."
+    folder: src/content/kitaplar
+    create: true
+    extension: yml
+    format: yaml
+    identifier_field: baslik
+    slug: "{{baslik}}"
+    summary: "{{baslik}} ({{yil}})"
+    sortable_fields: [sira, yil, baslik]
+    fields:
+      - { label: "Kitap adı", name: baslik, widget: string }
+      - { label: "Yayınevi", name: yayinevi, widget: string, required: false }
+      - { label: "Yıl", name: yil, widget: number, value_type: int, required: false }
+      - { label: "Kapak görseli", name: kapak, widget: image, required: false }
+      - { label: "Kapak rengi (görsel yoksa)", name: renk, widget: select, default: bordo, options: &renkler [{ label: "Bordo", value: bordo }, { label: "Lacivert", value: lacivert }, { label: "Yeşil", value: yesil }, { label: "Kahverengi", value: kahve }, { label: "Mürdüm", value: murdum }] }
+      - { label: "Tanıtım", name: tanitim, widget: text, required: false }
+      - { label: "Satın alma / erişim bağlantısı", name: baglanti, widget: string, required: false }
+      - &sira { label: "Sıra", name: sira, widget: number, value_type: int, default: 100, hint: "Küçük sayı önce gösterilir." }
+      - *yayinda
+
+  # ------------------------------------------------------------------ VİDEOLAR
+  - name: videolar
+    label: "Videolar"
+    label_singular: "Video"
+    description: "YouTube videoları. Bağlantıyı yapıştırmanız yeterli; kapak resmi otomatik gelir."
+    folder: src/content/videolar
+    create: true
+    extension: yml
+    format: yaml
+    identifier_field: baslik
+    slug: "{{baslik}}"
+    summary: "{{seri}} · {{baslik}}"
+    sortable_fields: [sira, tarih, baslik]
+    fields:
+      - { label: "Başlık", name: baslik, widget: string }
+      - { label: "YouTube bağlantısı", name: youtube, widget: string, hint: "Örn: https://www.youtube.com/watch?v=XXXXXXXXXXX" }
+      - { label: "Seri", name: seri, widget: string, required: false, hint: "Aynı seri adını taşıyan videolar Videolar sayfasında birlikte gruplanır." }
+      - { label: "Kısa açıklama", name: aciklama, widget: text, required: false }
+      - { label: "Tarih", name: tarih, widget: datetime, format: "YYYY-MM-DD", time_format: false, required: false }
+      - *sira
+      - *yayinda
+
+  # ------------------------------------------------------------------ ARAŞTIRMA ALANLARI
+  - name: alanlar
+    label: "Araştırma alanları"
+    label_singular: "Araştırma alanı"
+    folder: src/content/alanlar
+    create: true
+    extension: yml
+    format: yaml
+    identifier_field: baslik
+    slug: "{{baslik}}"
+    summary: "{{sira}} · {{baslik}}"
+    sortable_fields: [sira, baslik]
+    fields:
+      - { label: "Başlık", name: baslik, widget: string }
+      - { label: "Açıklama", name: aciklama, widget: text, required: false }
+      - *sira
+      - *yayinda
+
+  # ------------------------------------------------------------------ KLASİK ESERLER
+  - name: klasikler
+    label: "Klasik eserler"
+    label_singular: "Klasik eser"
+    description: "Ana sayfadaki kitap rafında ciltler bu listeden çizilir."
+    folder: src/content/klasikler
+    create: true
+    extension: yml
+    format: yaml
+    identifier_field: baslik
+    slug: "{{baslik}}"
+    summary: "{{sira}} · {{baslik}} — {{muellif}}"
+    sortable_fields: [sira, baslik]
+    fields:
+      - { label: "Eserin adı", name: baslik, widget: string, hint: "Cildin sırtında dikey yazılır; kısa tutun." }
+      - { label: "Arapça adı", name: arapca, widget: string }
+      - { label: "Cilt sırtındaki kısa Arapça ad", name: sirtYazisi, widget: string, hint: "Tek kelime en iyisi. Örn: البخاري" }
+      - { label: "Müellif", name: muellif, widget: string }
+      - { label: "Vefat tarihi", name: vefat, widget: string, hint: "Örn: ö. 256/870" }
+      - { label: "Kısa tanıtım", name: aciklama, widget: text, required: false }
+      - { label: "Cilt rengi", name: renk, widget: select, default: bordo, options: *renkler }
+      - { label: "Ana sayfada kart olarak göster", name: oneCikan, widget: boolean, default: false }
+      - *sira
+      - *yayinda
+
+  # ------------------------------------------------------------------ SORU-CEVAP
+  - name: sorular
+    label: "Soru-Cevap"
+    label_singular: "Soru"
+    folder: src/content/sorular
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: soru
+    slug: "{{soru}}"
+    summary: "{{sira}} · {{soru}}"
+    sortable_fields: [sira, soru]
+    fields:
+      - { label: "Soru", name: soru, widget: string }
+      - *sira
+      - *yayinda
+      - { label: "Cevap", name: body, widget: markdown }
+
+  # ------------------------------------------------------------------ AYARLAR
+  - name: ayarlar
+    label: "Sayfa ayarları"
+    editor: { preview: false }
+    files:
+      - name: anasayfa
+        label: "Ana sayfa"
+        file: src/content/ayarlar/anasayfa.yml
+        fields:
+          - { label: "Üst satır", name: ustBaslik, widget: string, required: false }
+          - { label: "Slogan", name: slogan, widget: string, hint: "Yıldız içine aldığınız kısım altın renkli ve italik görünür: Hadisi anlamak, *geleneği bugüne* taşımak" }
+          - { label: "Tanıtım metni", name: aciklama, widget: text }
+          - { label: "Büyük görsel", name: gorsel, widget: image, hint: "Yatay, en az 1600 piksel genişliğinde bir görsel önerilir." }
+          - { label: "Görselin açıklaması (görme engelliler için)", name: gorselAciklamasi, widget: string }
+          - label: "Sayılar"
+            name: istatistikler
+            widget: list
+            summary: "{{sayi}} {{etiket}}"
+            fields:
+              - { label: "Sayı", name: sayi, widget: string, hint: "Örn: 150+" }
+              - { label: "Etiket", name: etiket, widget: string }
+          - label: "Bölümler (sürükleyerek sıralayın)"
+            name: bolumler
+            widget: list
+            summary: "{{bolum}} — {{baslik}}"
+            hint: "Bölümleri sürükleyerek sıralayın; 'Görünür' anahtarını kapatarak gizleyin. İçeriği olmayan bölümler kendiliğinden gizlenir."
+            fields:
+              - label: "Bölüm"
+                name: bolum
+                widget: select
+                options:
+                  - { label: "Son yazı", value: son-yazi }
+                  - { label: "Araştırma alanları", value: alanlar }
+                  - { label: "Akademik yayınlar", value: yayinlar }
+                  - { label: "Klasik eserler rafı", value: klasikler }
+                  - { label: "Kitaplar", value: kitaplar }
+                  - { label: "Videolar", value: videolar }
+                  - { label: "Soru-cevap", value: sorular }
+                  - { label: "Hakkında", value: hakkinda }
+                  - { label: "Bülten / iletişim", value: bulten }
+              - { label: "Görünür", name: gorunur, widget: boolean, default: true }
+              - { label: "Küçük üst başlık", name: ustBaslik, widget: string, required: false }
+              - { label: "Başlık", name: baslik, widget: string, required: false }
+              - { label: "Açıklama", name: aciklama, widget: text, required: false }
+
+      - name: hakkinda
+        label: "Hakkında"
+        file: src/content/ayarlar/hakkinda.yml
+        fields:
+          - { label: "Kısa tanıtım", name: ozet, widget: text }
+          - { label: "Portre", name: portre, widget: image, hint: "Dikey (4:5) bir görsel en iyi sonucu verir." }
+          - { label: "Portrenin açıklaması", name: portreAciklamasi, widget: string }
+          - label: "Kısa bilgiler"
+            name: kisaBilgiler
+            widget: list
+            summary: "{{etiket}}: {{deger}}"
+            fields:
+              - { label: "Etiket", name: etiket, widget: string }
+              - { label: "Değer", name: deger, widget: string }
+          - label: "Özgeçmiş"
+            name: ozgecmis
+            widget: list
+            summary: "{{baslik}}"
+            fields:
+              - { label: "Başlık", name: baslik, widget: string }
+              - { label: "Metin", name: metin, widget: text }
+          - { label: "İletişim metni", name: iletisimMetni, widget: text, required: false }
+
+      - name: site
+        label: "Genel ve iletişim"
+        file: src/content/ayarlar/site.yml
+        fields:
+          - { label: "Unvan", name: unvan, widget: string }
+          - { label: "Ad Soyad", name: ad, widget: string }
+          - { label: "Uzmanlık alanı", name: uzmanlik, widget: string }
+          - { label: "Site açıklaması (arama motorları için)", name: siteAciklamasi, widget: text }
+          - { label: "Alt bilgi metni", name: altBilgiMetni, widget: text }
+          - { label: "E-posta", name: eposta, widget: string }
+          - { label: "YouTube kanal bağlantısı", name: youtube, widget: string, required: false }
+          - { label: "ORCID bağlantısı", name: orcid, widget: string, required: false }
+          - { label: "Google Scholar bağlantısı", name: scholar, widget: string, required: false }
+          - { label: "YÖK Akademik bağlantısı", name: yokAkademik, widget: string, required: false }
+          - { label: "Özgeçmiş PDF", name: ozgecmisPdf, widget: file, required: false }
+          - { label: "Bülten abonelik bağlantısı", name: bultenBaglanti, widget: string, required: false, hint: "Örn: Substack sayfanızın adresi. Boş bırakılırsa bülten bölümü yerine iletişim gösterilir." }

@@ -1,0 +1,18 @@
+---
+import Isik from './Isik.astro';
+interface Props { baslik: string; altBaslik?: string; yol?: { ad: string; href?: string }[] }
+const { baslik, altBaslik, yol } = Astro.props;
+---
+<section class="koyu sayfa-bas">
+  <Isik yon="sol" zerre />
+  <div class="icerik">
+    {yol && yol.length > 0 && (
+      <nav class="yol" aria-label="Konum" data-giris>
+        {yol.map((y, i) => <>{i > 0 && '  /  '}{y.href ? <a href={y.href}>{y.ad}</a> : <span>{y.ad}</span>}</>)}
+      </nav>
+    )}
+    <h1 data-giris>{baslik}</h1>
+    {altBaslik && <p class="alt-baslik" data-giris>{altBaslik}</p>}
+    <slot />
+  </div>
+</section>

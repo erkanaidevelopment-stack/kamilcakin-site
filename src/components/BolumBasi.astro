@@ -1,0 +1,12 @@
+---
+interface Props { ust?: string; baslik?: string; aciklama?: string; baglanti?: { href: string; ad: string }; orta?: boolean; id?: string }
+const { ust, baslik, aciklama, baglanti, orta = false, id } = Astro.props;
+---
+<div class:list={['bolum-bas', { orta }]} data-belir>
+  <div>
+    {ust && <span class="ust-baslik">{ust}</span>}
+    {baslik && <h2 class="b2" id={id}>{baslik}</h2>}
+    {aciklama && <p class="giris">{aciklama}</p>}
+  </div>
+  {baglanti && <a class="ok-baglanti" href={baglanti.href}>{baglanti.ad} →</a>}
+</div>

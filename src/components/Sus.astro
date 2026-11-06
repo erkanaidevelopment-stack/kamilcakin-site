@@ -1,0 +1,6 @@
+---
+interface Props { genislik?: number; renk?: string }
+const { genislik = 180, renk = '#D4AF5A' } = Astro.props;
+const orta = genislik / 2;
+---
+<svg class="sus" width={genislik} height="20" viewBox={`0 0 ${genislik} 20`} aria-hidden="true"><path d={`M0 10 H${orta - 14} M${orta + 14} 10 H${genislik}`} stroke={renk} stroke-width="1"></path><path d={`M${orta} 1 L${orta + 9} 10 L${orta} 19 L${orta - 9} 10 Z`} fill="none" stroke={renk} stroke-width="1.4"></path><circle cx={orta} cy="10" r="2.6" fill={renk}></circle></svg>

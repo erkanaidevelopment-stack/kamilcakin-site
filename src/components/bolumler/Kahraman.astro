@@ -1,0 +1,47 @@
+---
+import { ayar, u } from '../../lib/site';
+import Sus from '../Sus.astro';
+const site = await ayar('site');
+const ana = await ayar('anasayfa');
+const kacis = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+const slogan = kacis(String(ana.slogan ?? '')).replace(/\*(.+?)\*/g, '<em>$1</em>');
+const istatistikler: { sayi: string; etiket: string }[] = ana.istatistikler ?? [];
+---
+<section class="kahraman" aria-labelledby="kahraman-baslik">
+  {ana.gorsel && (
+    <div class="kahraman-gorsel" data-paralaks>
+      <img src={u(ana.gorsel)} alt={ana.gorselAciklamasi ?? ''} fetchpriority="high" decoding="async" />
+      <div class="golge g-sol"></div>
+      <div class="golge g-alt"></div>
+      <div class="golge g-ust"></div>
+      <div class="golge g-sag"></div>
+      <span class="zerre" style="top: 34%; left: 44%; width: 4px; height: 4px"></span>
+      <span class="zerre" style="top: 48%; left: 38%; width: 3px; height: 3px; animation-delay: -4s"></span>
+      <span class="zerre" style="top: 26%; left: 56%; width: 2px; height: 2px; animation-delay: -8s"></span>
+      <span class="zerre" style="top: 58%; left: 61%; width: 3px; height: 3px; animation-delay: -6s"></span>
+    </div>
+  )}
+  <div class="kahraman-icerik">
+    <div class="kap">
+      <div class="kahraman-metin">
+        {ana.ustBaslik && <span class="ust-baslik cizgili" style="color: var(--altin-acik)" data-giris>{ana.ustBaslik}</span>}
+        <h1 id="kahraman-baslik" data-giris>
+          <small>{site.unvan}</small>
+          <span class="yaldiz">{site.ad}</span>
+        </h1>
+        <div data-giris><Sus /></div>
+        {slogan && <p class="slogan" data-giris set:html={slogan} />}
+        {ana.aciklama && <p class="aciklama" data-giris>{ana.aciklama}</p>}
+        <div class="dugmeler" data-giris>
+          <a class="dugme altin" href={u('/yazilar/')}>Yazıları keşfet</a>
+          <a class="dugme cizgi" href={u('/yayinlar/')}>Akademik yayınlar</a>
+        </div>
+        {istatistikler.length > 0 && (
+          <div class="sayilar" data-giris>
+            {istatistikler.map((s) => <div><b data-say={s.sayi}>{s.sayi}</b><span>{s.etiket}</span></div>)}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>

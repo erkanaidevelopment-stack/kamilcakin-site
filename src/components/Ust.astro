@@ -1,0 +1,36 @@
+---
+import { ayar, u } from '../lib/site';
+import Logo from './Logo.astro';
+const site = await ayar('site');
+const yol = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+const ogeler = [
+  { ad: 'Yazılar', href: '/yazilar/' },
+  { ad: 'Akademik Yayınlar', href: '/yayinlar/' },
+  { ad: 'Kitaplar', href: '/kitaplar/' },
+  { ad: 'Videolar', href: '/videolar/' },
+  { ad: 'Soru-Cevap', href: '/sorular/' },
+  { ad: 'Hakkında', href: '/hakkinda/' },
+];
+---
+<header class="ust">
+  <div class="kap">
+    <a class="logo" href={u('/')} aria-label={`${site.unvan} ${site.ad} ana sayfa`}>
+      <Logo />
+      <span class="logo-yazi"><small>{site.unvan}</small><span>{site.ad}</span></span>
+    </a>
+    <button class="menu-ac" type="button" aria-controls="ana-menu" aria-expanded="false" aria-label="Menüyü aç">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav class="menu" id="ana-menu" aria-label="Ana menü">
+      <button class="menu-ac menu-kapat" type="button" aria-label="Menüyü kapat">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      {ogeler.map((o) => (
+        <a href={u(o.href)} aria-current={yol.startsWith(o.href) ? 'page' : undefined}>{o.ad}</a>
+      ))}
+      {site.bultenBaglanti
+        ? <a class="dugme altin" href={site.bultenBaglanti} target="_blank" rel="noopener">Bültene katıl</a>
+        : <a class="dugme altin" href={`mailto:${site.eposta}`}>İletişim</a>}
+    </nav>
+  </div>
+</header>

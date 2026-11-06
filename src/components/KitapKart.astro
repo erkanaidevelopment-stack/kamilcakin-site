@@ -1,0 +1,23 @@
+---
+import { u, renk, ayar } from '../lib/site';
+interface Props { k: any }
+const { k } = Astro.props;
+const site = await ayar('site');
+const r = renk(k.data.renk);
+const icerik = k.data.baglanti;
+---
+<a class="kitap" href={icerik || undefined} target={icerik ? '_blank' : undefined} rel={icerik ? 'noopener' : undefined} data-belir>
+  <div class="kapak" style={`background: linear-gradient(160deg, ${r.ana}, ${r.koyu})`}>
+    {k.data.kapak ? <img src={u(k.data.kapak)} alt={`${k.data.baslik} kitabının kapağı`} loading="lazy" /> : (
+      <div class="cerceve"><div>
+        <svg width="70" height="22" viewBox="0 0 70 22" aria-hidden="true"><path d="M0 11 H24 M46 11 H70" stroke="#E2C171" stroke-width="1"></path><path d="M35 2 L42 11 L35 20 L28 11 Z" fill="none" stroke="#E2C171" stroke-width="1.4"></path><circle cx="35" cy="11" r="2.2" fill="#E2C171"></circle></svg>
+        <span class="ad">{k.data.baslik}</span>
+        <span class="yazar">{site.ad}</span>
+      </div></div>
+    )}
+  </div>
+  <span class="bilgi">
+    <b>{k.data.baslik}</b>
+    <span>{[k.data.yayinevi, k.data.yil].filter(Boolean).join(', ')}</span>
+  </span>
+</a>

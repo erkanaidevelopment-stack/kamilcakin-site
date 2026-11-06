@@ -1,0 +1,52 @@
+ustBaslik: Hadis · Gelenek · Modern Dönem
+slogan: Hadisi anlamak, *geleneği bugüne* taşımak
+aciklama: Otuz beş yılı aşkın akademik birikim; makaleler, denemeler ve videolarla hem araştırmacılar hem de meraklı okurlar için tek çatı altında.
+gorsel: /uploads/hero-kutuphane.jpg
+gorselAciklamasi: Prof. Dr. Kamil Çakın, pencereden süzülen altın ışık altında, ciltli eserlerle dolu bir kütüphanede kitap okurken
+istatistikler:
+  - sayi: 35+
+    etiket: yıllık akademik hayat
+  - sayi: 150+
+    etiket: makale
+  - sayi: 12+
+    etiket: kitap
+bolumler:
+  - bolum: son-yazi
+    gorunur: true
+    ustBaslik: Son yazı
+    baslik: Kaleme alınan son düşünceler
+  - bolum: alanlar
+    gorunur: true
+    ustBaslik: Araştırma alanları
+    baslik: Bir ömrün araştırma alanları
+    aciklama: Makaleler, yazılar ve videolar konularına göre bir arada.
+  - bolum: yayinlar
+    gorunur: true
+    ustBaslik: Akademik yayınlar
+    baslik: Hakemli makaleler ve bölümler
+  - bolum: klasikler
+    gorunur: true
+    ustBaslik: Klasik kaynaklar
+    baslik: İslam düşüncesinin temel eserleri
+    aciklama: Hocanın çalışmalarının dayandığı klasikler; her eser için müellif, dönem ve kısa bir tanıtım.
+  - bolum: kitaplar
+    gorunur: true
+    ustBaslik: Kitaplar
+    baslik: Prof. Dr. Kamil Çakın'ın kitapları
+  - bolum: videolar
+    gorunur: true
+    ustBaslik: Videolar
+    baslik: İzle, oku, derinleş
+  - bolum: sorular
+    gorunur: true
+    ustBaslik: Soru-Cevap
+    baslik: Sık sorulan sorular, kısa ve kaynaklı cevaplar
+    aciklama: Akademik makalelerin özünü herkesin anlayacağı dille sunan kısa cevaplar.
+  - bolum: hakkinda
+    gorunur: true
+    ustBaslik: Hakkında
+  - bolum: bulten
+    gorunur: true
+    ustBaslik: Bülten
+    baslik: İnsan-ı Kâmil Bülteni
+    aciklama: Yeni yazılar, makale özetleri ve videolar e-posta kutunuzda.

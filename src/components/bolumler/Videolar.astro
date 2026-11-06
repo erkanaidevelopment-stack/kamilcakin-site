@@ -1,0 +1,20 @@
+---
+import { siraliYayindakiler, ayar, u } from '../../lib/site';
+import BolumBasi from '../BolumBasi.astro';
+import VideoKart from '../VideoKart.astro';
+interface Props { b: any }
+const { b } = Astro.props;
+const site = await ayar('site');
+const videolar = await siraliYayindakiler('videolar');
+---
+{videolar.length > 0 && (
+  <section class="bolum" aria-labelledby="videolar">
+    <div class="kap">
+      <BolumBasi id="videolar" ust={b.ustBaslik} baslik={b.baslik} aciklama={b.aciklama}
+        baglanti={videolar.length > 3 ? { href: u('/videolar/'), ad: 'Tüm videolar' } : site.youtube ? { href: site.youtube, ad: 'YouTube kanalı' } : undefined} />
+      <div class="izgara-3">
+        {videolar.slice(0, 3).map((v) => <VideoKart v={v} />)}
+      </div>
+    </div>
+  </section>
+)}

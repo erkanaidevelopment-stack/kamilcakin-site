@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SayfaBasi from '../components/SayfaBasi.astro';
+import { u } from '../lib/site';
+---
+<Layout baslik="Sayfa bulunamadı">
+  <SayfaBasi baslik="Sayfa bulunamadı" altBaslik="Aradığınız sayfa taşınmış ya da kaldırılmış olabilir.">
+    <div data-giris><a class="dugme altin" href={u('/')}>Ana sayfaya dön</a></div>
+  </SayfaBasi>
+</Layout>

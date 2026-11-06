@@ -1,0 +1,23 @@
+---
+import { siraliYayindakiler } from '../../lib/site';
+import BolumBasi from '../BolumBasi.astro';
+interface Props { b: any }
+const { b } = Astro.props;
+const alanlar = await siraliYayindakiler('alanlar');
+---
+{alanlar.length > 0 && (
+  <section class="bolum acik" aria-labelledby="alanlar">
+    <div class="kap">
+      <BolumBasi id="alanlar" ust={b.ustBaslik} baslik={b.baslik} aciklama={b.aciklama} />
+      <div class="izgara-3">
+        {alanlar.map((a, i) => (
+          <div class="alan" data-belir>
+            <span class="no">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{a.data.baslik}</h3>
+            {a.data.aciklama && <p>{a.data.aciklama}</p>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

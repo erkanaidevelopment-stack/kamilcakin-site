@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SayfaBasi from '../../components/SayfaBasi.astro';
+import { yazilarSirali, u, tarihYaz, okumaSuresi } from '../../lib/site';
+const yazilar = await yazilarSirali();
+---
+<Layout baslik="Yazılar" aciklama="Başyazılar, denemeler ve güncel değerlendirmeler.">
+  <SayfaBasi baslik="Yazılar" altBaslik="Başyazılar, denemeler ve güncel değerlendirmeler." yol={[{ ad: 'Ana sayfa', href: u('/') }, { ad: 'Yazılar' }]} />
+  <section class="bolum">
+    <div class="kap">
+      {yazilar.length === 0 ? <p class="bos-not">Henüz yayınlanmış yazı yok.</p> : (
+        <div class="yazi-liste">
+          {yazilar.map((y) => (
+            <a class="yazi-oge" href={u(`/yazilar/${y.id}/`)} data-belir>
+              <div class="meta">
+                <span class="etiket dolu">{y.data.tur}</span>
+                {y.data.kategori && <span class="etiket bos">{y.data.kategori}</span>}
+              </div>
+              <h2>{y.data.baslik}</h2>
+              {y.data.ozet && <p>{y.data.ozet}</p>}
+              <span class="meta">{okumaSuresi(y.body ?? '')} dk okuma{y.data.tarih && ` · ${tarihYaz(y.data.tarih)}`}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

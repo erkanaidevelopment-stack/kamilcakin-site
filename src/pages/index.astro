@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Kahraman from '../components/bolumler/Kahraman.astro';
+import SonYazi from '../components/bolumler/SonYazi.astro';
+import Alanlar from '../components/bolumler/Alanlar.astro';
+import Yayinlar from '../components/bolumler/Yayinlar.astro';
+import Klasikler from '../components/bolumler/Klasikler.astro';
+import Kitaplar from '../components/bolumler/Kitaplar.astro';
+import Videolar from '../components/bolumler/Videolar.astro';
+import Sorular from '../components/bolumler/Sorular.astro';
+import Hakkinda from '../components/bolumler/Hakkinda.astro';
+import Bulten from '../components/bolumler/Bulten.astro';
+import { ayar } from '../lib/site';
+
+const ana = await ayar('anasayfa');
+// Bölümlerin sırası ve görünürlüğü yönetim panelinden (Ana sayfa → Bölümler) ayarlanır.
+const bolumler: any[] = (ana.bolumler ?? []).filter((b: any) => b && b.gorunur !== false);
+const BILESENLER: Record<string, any> = {
+  'son-yazi': SonYazi, alanlar: Alanlar, yayinlar: Yayinlar, klasikler: Klasikler, kitaplar: Kitaplar,
+  videolar: Videolar, sorular: Sorular, hakkinda: Hakkinda, bulten: Bulten,
+};
+---
+<Layout>
+  <Kahraman />
+  {bolumler.map((b) => {
+    const Bilesen = BILESENLER[b.bolum];
+    return Bilesen ? <Bilesen b={b} /> : null;
+  })}
+</Layout>

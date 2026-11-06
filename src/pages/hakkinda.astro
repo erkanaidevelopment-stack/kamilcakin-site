@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SayfaBasi from '../components/SayfaBasi.astro';
+import Hakkinda from '../components/bolumler/Hakkinda.astro';
+import { ayar, u } from '../lib/site';
+const site = await ayar('site');
+const h = await ayar('hakkinda');
+const ozgecmis: { baslik: string; metin: string }[] = h.ozgecmis ?? [];
+---
+<Layout baslik="Hakkında" aciklama={h.ozet}>
+  <SayfaBasi baslik="Hakkında" altBaslik={`${site.unvan} ${site.ad}`} yol={[{ ad: 'Ana sayfa', href: u('/') }, { ad: 'Hakkında' }]} />
+  <Hakkinda b={{}} tam />
+  {ozgecmis.length > 0 && (
+    <section class="bolum acik" aria-labelledby="ozgecmis">
+      <div class="kap" style="max-width: 900px">
+        <h2 class="b2" id="ozgecmis" style="margin-bottom: 32px" data-belir>Kısa özgeçmiş</h2>
+        <dl style="margin: 0; display: flex; flex-direction: column">
+          {ozgecmis.map((o) => (
+            <div style="display: flex; flex-wrap: wrap; gap: 6px 32px; padding: 20px 0; border-top: 1px solid var(--cizgi)" data-belir>
+              <dt style="flex: 0 0 220px; font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--altin-koyu); padding-top: 4px">{o.baslik}</dt>
+              <dd style="margin: 0; flex: 1 1 360px; font-family: var(--serif-metin); font-size: 18px; line-height: 1.6">{o.metin}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  )}
+  <section class="koyu bulten">
+    <div class="icerik" data-belir>
+      <h2>İletişim</h2>
+      {h.iletisimMetni && <p>{h.iletisimMetni}</p>}
+      {site.eposta && <a class="dugme altin" href={`mailto:${site.eposta}`}>{site.eposta}</a>}
+    </div>
+  </section>
+</Layout>

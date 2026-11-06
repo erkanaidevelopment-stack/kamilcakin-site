@@ -1,0 +1,19 @@
+---
+import { siraliYayindakiler, u } from '../../lib/site';
+import BolumBasi from '../BolumBasi.astro';
+import KitapKart from '../KitapKart.astro';
+interface Props { b: any }
+const { b } = Astro.props;
+const kitaplar = await siraliYayindakiler('kitaplar');
+---
+{kitaplar.length > 0 && (
+  <section class="bolum acik" aria-labelledby="kitaplar">
+    <div class="kap">
+      <BolumBasi id="kitaplar" orta ust={b.ustBaslik} baslik={b.baslik} aciklama={b.aciklama} />
+      <div class="kitap-dizi">
+        {kitaplar.slice(0, 5).map((k) => <KitapKart k={k} />)}
+      </div>
+      {kitaplar.length > 5 && <div class="dugmeler" style="justify-content: center; margin-top: 40px"><a class="dugme koyu-d" href={u('/kitaplar/')}>Tüm kitaplar</a></div>}
+    </div>
+  </section>
+)}
