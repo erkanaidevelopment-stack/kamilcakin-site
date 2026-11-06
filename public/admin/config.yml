@@ -4,7 +4,7 @@
 
 backend:
   name: github
-  repo: GITHUB_KULLANICI/kamilcakin-site
+  repo: erkanaidevelopment-stack/kamilcakin-site
   branch: main
   commit_messages:
     create: "{{collection}}: “{{slug}}” eklendi"
@@ -13,8 +13,8 @@ backend:
     uploadMedia: "Dosya yüklendi: {{path}}"
     deleteMedia: "Dosya silindi: {{path}}"
 
-site_url: https://kamilcakin.com
-display_url: https://kamilcakin.com
+site_url: https://erkanaidevelopment-stack.github.io/kamilcakin-site/
+display_url: https://erkanaidevelopment-stack.github.io/kamilcakin-site/
 media_folder: public/uploads
 public_folder: /uploads
 

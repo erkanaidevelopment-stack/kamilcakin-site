@@ -5,7 +5,7 @@ Site, yönetim paneli, yazılar, görseller ve PDF'ler bu depoda durur; GitHub P
 
 ## İçerik nasıl güncellenir?
 
-1. `https://kamilcakin.com/admin/` adresine gidin (alan adı bağlanana kadar: `https://KULLANICI.github.io/kamilcakin-site/admin/`).
+1. `https://kamilcakin.com/admin/` adresine gidin (alan adı bağlanana kadar: `https://erkanaidevelopment-stack.github.io/kamilcakin-site/admin/`).
 2. **Sign In Using Access Token** düğmesine basın ve GitHub erişim anahtarınızı yapıştırın (aşağıya bakın).
 3. Soldaki menüden bölümü seçin, ekleyin, düzenleyin ya da silin, sonra **Save** deyin.
 4. Site 1–2 dakika içinde kendiliğinden güncellenir.
