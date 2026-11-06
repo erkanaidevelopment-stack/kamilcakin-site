@@ -6,18 +6,39 @@ const ana = await ayar('anasayfa');
 const kacis = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
 const slogan = kacis(String(ana.slogan ?? '')).replace(/\*(.+?)\*/g, '<em>$1</em>');
 const istatistikler: { sayi: string; etiket: string }[] = ana.istatistikler ?? [];
-// Fotoğraftaki pencereden yayılan, rastgele salınan ışık hüzmeleri.
-// Her hüzme iki katmanda çizilir: "pus" havadaki ışık, "vurgu" ise üzerinden geçtiği nesneyi aydınlatır.
+// Fotoğraftaki pencereden yayılan, rastgele salınan ışık hüzmeleri (yalnızca havada; nesnelerin önüne geçmez).
 const huzmeler = [
-  { aci: 46, w: 90, o: 0.7, b: 16 }, { aci: 30, w: 150, o: 0.6, b: 26 }, { aci: 15, w: 70, o: 0.8, b: 12 },
-  { aci: 4, w: 120, o: 0.75, b: 20 }, { aci: -9, w: 60, o: 0.7, b: 10 }, { aci: -24, w: 130, o: 0.6, b: 24 },
-  { aci: -40, w: 100, o: 0.7, b: 18 },
+  { aci: 40, w: 80, o: 0.5, b: 14 }, { aci: 26, w: 130, o: 0.45, b: 22 }, { aci: 12, w: 60, o: 0.55, b: 10 },
+  { aci: 0, w: 110, o: 0.5, b: 20 }, { aci: -12, w: 60, o: 0.55, b: 12 }, { aci: -26, w: 130, o: 0.45, b: 24 },
+  { aci: -40, w: 90, o: 0.5, b: 16 },
 ];
-// Işığın vurduğunda parlayan noktalar (fotoğraf üzerinde yüzde konum): saçlar, açık kitap, yaldızlı ciltler
-const hedefler = [
-  { x: 48.5, y: 46, r: 14 }, { x: 49.8, y: 81, r: 20 }, { x: 46, y: 64, r: 16 },
-  { x: 77, y: 70, r: 18 }, { x: 88, y: 72, r: 16 }, { x: 14, y: 72, r: 18 }, { x: 31, y: 85, r: 14 },
+// Fotoğraftaki nesneler (1376×768 piksellik fotoğraf koordinatları). Işığa dönük yüzleri aydınlanır, öbür yüzleri kararır.
+// yon: pencereye bakan taraf; isik: ışık gradyanının başlangıç ve bitiş noktası.
+type Nesne = { ad: string; nokta: number[][]; isik: [number, number, number, number] };
+const nesneler: Nesne[] = [
+  { ad: 'sag-ciltler', nokta: [[930, 486], [1286, 478], [1292, 708], [934, 708]], isik: [930, 0, 1292, 0] },
+  { ad: 'sol-ciltler', nokta: [[56, 476], [364, 486], [364, 706], [56, 706]], isik: [364, 0, 56, 0] },
+  { ad: 'sag-yigin', nokta: [[826, 562], [944, 562], [944, 664], [826, 664]], isik: [826, 0, 944, 0] },
+  { ad: 'sol-yigin', nokta: [[346, 584], [546, 584], [546, 704], [346, 704]], isik: [546, 0, 346, 0] },
+  { ad: 'hoca', nokta: [[604, 336], [640, 316], [702, 318], [732, 356], [732, 424], [792, 468], [818, 524], [516, 524], [546, 470], [610, 432], [604, 382]], isik: [0, 316, 0, 524] },
+  { ad: 'acik-kitap', nokta: [[552, 600], [814, 600], [814, 654], [552, 654]], isik: [0, 600, 0, 654] },
 ];
+// Masaya düşen gölgeler: tabanın konumu (yüzde) ve ışığın yönüne göre temel eğimi
+const golgeler = [
+  { l: 67.6, t: 92, w: 26.4, egim: 28, nesne: 0 }, { l: 4, t: 91.9, w: 22.6, egim: -28, nesne: 1 },
+  { l: 60, t: 86.4, w: 8.6, egim: 18, nesne: 2 }, { l: 25.1, t: 91.6, w: 14.6, egim: -18, nesne: 3 },
+];
+const svg = (ic: string) => `url("data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1376 768' preserveAspectRatio='none'>${ic}</svg>`)}")`;
+const bulanik = `<filter id='b' x='-10%' y='-10%' width='120%' height='120%'><feGaussianBlur stdDeviation='7'/></filter>`;
+const noktalar = (n: Nesne) => n.nokta.map((p) => p.join(',')).join(' ');
+const maske = (n: Nesne, ters: boolean) => {
+  const [x1, y1, x2, y2] = n.isik;
+  const gr = `<linearGradient id='g' gradientUnits='userSpaceOnUse' x1='${x1}' y1='${y1}' x2='${x2}' y2='${y2}'><stop offset='0' stop-color='#fff' stop-opacity='${ters ? 0.15 : 1}'/><stop offset='1' stop-color='#fff' stop-opacity='${ters ? 1 : 0.15}'/></linearGradient>`;
+  return svg(`<defs>${gr}${bulanik}</defs><polygon points='${noktalar(n)}' fill='url(#g)' filter='url(#b)'/>`);
+};
+// Havadaki ışığın görünmediği yerler: nesnelerin ve masanın önü
+const pusMaskesi = svg(`<defs>${bulanik}<mask id='m'><rect width='1376' height='768' fill='#fff'/><g filter='url(#b)' fill='#000'>${nesneler.map((n) => `<polygon points='${noktalar(n)}'/>`).join('')}<polygon points='600,330 640,312 706,316 738,360 734,425 798,468 828,540 832,640 468,640 478,478 540,462 608,428 600,380'/><rect x='0' y='636' width='1376' height='132'/></g></mask></defs><rect width='1376' height='768' fill='#fff' mask='url(#m)'/>`);
+const maskeStili = (m: string) => `-webkit-mask-image: ${m}; mask-image: ${m};`;
 // Işığın içinde süzülen toz zerrecikleri (her derlemede aynı dizilim için sabit tohumla)
 let tohum = 7;
 const rnd = () => { tohum = (tohum * 9301 + 49297) % 233280; return tohum / 233280; };
@@ -30,14 +51,21 @@ const zerreler = Array.from({ length: 22 }, () => ({
     <div class="kahraman-gorsel">
       <div class="sahne" data-sahne>
         <img src={u(ana.gorsel)} alt={ana.gorselAciklamasi ?? ''} fetchpriority="high" decoding="async" />
-        <div class="isik-vurgu" aria-hidden="true">
-          {huzmeler.map((h, i) => <div class="h" data-huzme={i} data-aci={h.aci} style={`width: ${h.w * 1.3}px; margin-left: -${h.w * 0.65}px; transform: rotate(${h.aci}deg); opacity: ${h.o}; filter: blur(${h.b * 1.4}px)`}></div>)}
-        </div>
-        <div class="isik-pus" aria-hidden="true">
-          {huzmeler.map((h, i) => <div class="h" data-huzme={i} data-aci={h.aci} data-gen={h.w} style={`width: ${h.w}px; margin-left: -${h.w / 2}px; transform: rotate(${h.aci}deg); opacity: ${h.o}; filter: blur(${h.b}px)`}></div>)}
+        <div class="isik-pus" aria-hidden="true" style={maskeStili(pusMaskesi)}>
+          {huzmeler.map((h) => <div class="h" data-aci={h.aci} data-gen={h.w} data-op={h.o} style={`width: ${h.w}px; margin-left: -${h.w / 2}px; transform: rotate(${h.aci}deg); opacity: ${h.o}; filter: blur(${h.b}px)`}></div>)}
         </div>
         <div aria-hidden="true">
-          {hedefler.map((p) => <span class="parlama" data-hedef data-x={p.x} data-y={p.y} style={`left: ${p.x}%; top: ${p.y}%; width: ${p.r}%`}></span>)}
+          {golgeler.map((g) => <span class="masa-golge" data-golge data-egim={g.egim} data-nesne={g.nesne} style={`left: ${g.l}%; top: ${g.t}%; width: ${g.w}%; transform: skewX(${g.egim}deg)`}></span>)}
+          {nesneler.map((n) => {
+            const xs = n.nokta.map((p) => p[0]); const ys = n.nokta.map((p) => p[1]);
+            const cx = ((Math.min(...xs) + Math.max(...xs)) / 2 / 1376) * 100; const cy = ((Math.min(...ys) + Math.max(...ys)) / 2 / 768) * 100;
+            return (
+              <>
+                <span class="nesne-golge" data-nesne-golge style={`background-image: url(${u(ana.gorsel)}); ${maskeStili(maske(n, true))}`}></span>
+                <span class="nesne-isik" data-nesne-isik data-x={cx.toFixed(2)} data-y={cy.toFixed(2)} style={`background-image: url(${u(ana.gorsel)}); ${maskeStili(maske(n, false))}`}></span>
+              </>
+            );
+          })}
         </div>
         {zerreler.map((z) => <span class="zerre" style={`top: ${z.t}%; left: ${z.l}%; width: ${z.s}px; height: ${z.s}px; opacity: ${z.o}`}></span>)}
       </div>

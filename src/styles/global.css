@@ -127,14 +127,13 @@ a:hover { color: #4F3B0E; }
 .sahne { position: absolute; width: max(100cqw, 179.17cqh); height: max(100cqh, 55.81cqw); left: calc((100cqw - max(100cqw, 179.17cqh)) * .55); top: calc((100cqh - max(100cqh, 55.81cqw)) * .4); }
 .sahne img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .kahraman-gorsel .golge { position: absolute; inset: 0; pointer-events: none; }
-.isik-pus, .isik-vurgu { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-.isik-pus { mix-blend-mode: screen; }
-.isik-vurgu { mix-blend-mode: overlay; }
-.isik-pus .h, .isik-vurgu .h { position: absolute; top: 12%; left: 50%; height: 100%; transform-origin: 50% 0%; }
-.isik-pus .h { background: linear-gradient(180deg, rgba(255,230,170,.45) 0%, rgba(255,214,140,.22) 50%, rgba(255,214,140,0) 92%); }
-.isik-vurgu .h { background: linear-gradient(180deg, rgba(255,214,140,.25) 0%, rgba(255,205,120,.95) 45%, rgba(255,200,110,.75) 80%, rgba(255,200,110,0) 100%); }
-@media (max-width: 900px) { .isik-pus { opacity: .5; } .isik-vurgu { opacity: .6; } }
-.parlama { position: absolute; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; mix-blend-mode: screen; opacity: 0; background: radial-gradient(circle, rgba(255,232,175,.75) 0%, rgba(255,214,140,.32) 35%, rgba(255,214,140,0) 70%); }
+.isik-pus { position: absolute; inset: 0; pointer-events: none; overflow: hidden; mix-blend-mode: screen; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+.isik-pus .h { position: absolute; top: 12%; left: 50%; height: 100%; transform-origin: 50% 0%; background: linear-gradient(180deg, rgba(255,226,160,.6), rgba(255,214,140,.2) 45%, rgba(255,214,140,0) 85%); }
+/* Nesnelerin ışığa dönük yüzü (aydınlık) ve öbür yüzü (gölgeli): fotoğrafın kopyası, nesne biçiminde maskelenmiş */
+.nesne-isik, .nesne-golge { position: absolute; inset: 0; pointer-events: none; background-size: 100% 100%; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; opacity: 0; }
+.nesne-isik { filter: brightness(1.32) saturate(1.08) sepia(.12); }
+.nesne-golge { filter: brightness(.55) saturate(.85); }
+.masa-golge { position: absolute; height: 6%; transform-origin: 50% 0%; pointer-events: none; mix-blend-mode: multiply; background: linear-gradient(180deg, rgba(10,6,2,.75), rgba(10,6,2,0)); filter: blur(6px); opacity: .45; }
 .hareketli .isik .h, .hareketli .zerre { animation: none; }
 .kahraman-gorsel .g-sol { background: linear-gradient(90deg, var(--murekkep) 0%, rgba(14,21,19,.9) 10%, rgba(14,21,19,.55) 20%, rgba(14,21,19,0) 34%); }
 .kahraman-gorsel .g-alt { background: linear-gradient(0deg, var(--murekkep) 0%, rgba(14,21,19,.75) 12%, rgba(14,21,19,0) 32%); }

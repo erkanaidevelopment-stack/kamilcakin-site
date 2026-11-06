@@ -110,50 +110,57 @@ if (azHareket) {
     gsap.delayedCall(rastgele(0, 2), () => salin(el, temel, true));
   });
 
-  // Ana sayfa fotoğrafı: pencereden düşen hüzmeler salınır; üzerinden geçtikleri nesneleri aydınlatır
+  // Ana sayfa fotoğrafı: pencereden gelen ışık rastgele yön ve şiddet değiştirir.
+  // Hüzmeler yalnızca havada görünür; ışığa dönük yüzler aydınlanır, öbür yüzler kararır, masadaki gölgeler kayar.
   if (sahne) {
-    const pus = [...sahne.querySelectorAll<HTMLElement>('.isik-pus .h')];
-    const vurgu = [...sahne.querySelectorAll<HTMLElement>('.isik-vurgu .h')];
-    const hedefler = [...sahne.querySelectorAll<HTMLElement>('[data-hedef]')];
-    const salinSahne = (i: number, temel: number) => {
-      // Aynı rastgele değerler hem havadaki ışığa hem nesne üzerindeki aydınlığa uygulanır
-      gsap.to([pus[i], vurgu[i]], {
-        rotation: temel + rastgele(-12, 12),
-        x: rastgele(-25, 25),
-        scaleX: rastgele(0.7, 1.4),
-        opacity: rastgele(0.25, 1),
-        duration: rastgele(3, 7),
-        ease: 'sine.inOut',
-        onComplete: () => salinSahne(i, temel),
-      });
+    const huzmeler = [...sahne.querySelectorAll<HTMLElement>('.isik-pus .h')];
+    const isiklar = [...sahne.querySelectorAll<HTMLElement>('[data-nesne-isik]')];
+    const golgeliler = [...sahne.querySelectorAll<HTMLElement>('[data-nesne-golge]')];
+    const masaGolgeleri = [...sahne.querySelectorAll<HTMLElement>('[data-golge]')];
+    // Işığın genel durumu: kaynak açısı ve şiddeti; her hüzmenin de kendi küçük titreşimi var
+    const kaynak = { aci: 0, guc: 0.8 };
+    const kaynakDegis = () => gsap.to(kaynak, { aci: rastgele(-11, 11), guc: rastgele(0.45, 1), duration: rastgele(3, 6), ease: 'sine.inOut', onComplete: kaynakDegis });
+    kaynakDegis();
+    const titresim = huzmeler.map((h) => ({ a: 0, x: 0, s: 1, o: Number(h.dataset.op ?? 0.5) }));
+    const titret = (i: number) => {
+      const temelOp = Number(huzmeler[i].dataset.op ?? 0.5);
+      gsap.to(titresim[i], { a: rastgele(-5, 5), x: rastgele(-20, 20), s: rastgele(0.75, 1.35), o: temelOp * rastgele(0.5, 1.5), duration: rastgele(2.5, 5.5), ease: 'sine.inOut', onComplete: () => titret(i) });
     };
-    pus.forEach((el, i) => {
-      const temel = Number(el.dataset.aci ?? 0);
-      gsap.set([el, vurgu[i]], { rotation: temel, transformOrigin: '50% 0%' });
-      gsap.delayedCall(rastgele(0, 1.5), () => salinSahne(i, temel));
-    });
+    huzmeler.forEach((_, i) => titret(i));
 
-    // Bir hüzme bir nesnenin üzerinden geçerken o nesne parlar; ışık ayrılınca söner
     const RAD = 180 / Math.PI;
-    const hedefParla = hedefler.map((h) => gsap.quickTo(h, 'opacity', { duration: 0.6, ease: 'power2.out' }));
     gsap.ticker.add(() => {
       const W = sahne.offsetWidth, H = sahne.offsetHeight;
       if (!W || !H) return;
+      // Hüzmeleri yerleştir
+      huzmeler.forEach((h, i) => {
+        const t = titresim[i];
+        gsap.set(h, { rotation: Number(h.dataset.aci) + kaynak.aci + t.a, x: t.x, scaleX: t.s, opacity: Math.min(1, t.o * (0.55 + kaynak.guc * 0.6)), transformOrigin: '50% 0%' });
+      });
+      // Her nesneye ne kadar ışık düştüğünü hüzmelerin açısından hesapla
       const ox = W * 0.5, oy = H * 0.12;
-      hedefler.forEach((h, j) => {
-        const tx = (Number(h.dataset.x) / 100) * W, ty = (Number(h.dataset.y) / 100) * H;
-        let isik = 0;
-        pus.forEach((b) => {
-          const bx = Number(gsap.getProperty(b, 'x'));
-          const dx = tx - ox - bx, dy = ty - oy;
-          const uzaklik = Math.hypot(dx, dy) || 1;
-          const hedefAci = -Math.atan2(dx, dy) * RAD;
-          const aci = Number(gsap.getProperty(b, 'rotation'));
-          const yari = Math.max(2.5, Math.atan(((Number(b.dataset.gen) || 80) * Number(gsap.getProperty(b, 'scaleX'))) / 2 / uzaklik) * RAD);
-          const fark = (aci - hedefAci) / yari;
-          isik += Number(gsap.getProperty(b, 'opacity')) * Math.exp(-fark * fark);
+      const isikMiktari = isiklar.map((el) => {
+        const dx = (Number(el.dataset.x) / 100) * W - ox, dy = (Number(el.dataset.y) / 100) * H - oy;
+        const uzaklik = Math.hypot(dx, dy) || 1;
+        let toplam = 0;
+        huzmeler.forEach((h, i) => {
+          const t = titresim[i];
+          const hedefAci = -Math.atan2(dx - t.x, dy) * RAD;
+          const aci = Number(h.dataset.aci) + kaynak.aci + t.a;
+          const yari = Math.max(4, Math.atan(((Number(h.dataset.gen) || 80) * t.s) / 2 / uzaklik) * RAD * 1.6);
+          const f = (aci - hedefAci) / yari;
+          toplam += t.o * Math.exp(-f * f);
         });
-        hedefParla[j](Math.min(1, isik * 1.1));
+        return Math.min(1, toplam * 1.4 * (0.5 + kaynak.guc * 0.6));
+      });
+      isiklar.forEach((el, j) => { el.style.opacity = String(isikMiktari[j] * 0.85); });
+      golgeliler.forEach((el, j) => { el.style.opacity = String((1 - isikMiktari[j]) * 0.6); });
+      // Masadaki gölgeler ışığın tersine kayar, ışık güçlendikçe belirginleşir
+      masaGolgeleri.forEach((el) => {
+        const n = Number(el.dataset.nesne);
+        const egim = Number(el.dataset.egim) - kaynak.aci * 2.4;
+        el.style.transform = `skewX(${egim}deg) scaleY(${0.8 + kaynak.guc * 0.6})`;
+        el.style.opacity = String(0.2 + kaynak.guc * 0.35 + (isikMiktari[n] ?? 0) * 0.25);
       });
     });
   }
