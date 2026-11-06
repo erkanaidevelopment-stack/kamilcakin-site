@@ -128,7 +128,13 @@ a:hover { color: #4F3B0E; }
 .sahne img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .kahraman-gorsel .golge { position: absolute; inset: 0; pointer-events: none; }
 .isik-pus { position: absolute; inset: 0; pointer-events: none; overflow: hidden; mix-blend-mode: screen; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
-.isik-pus .h { position: absolute; top: 12%; left: 50%; height: 100%; transform-origin: 50% 0%; background: linear-gradient(180deg, rgba(255,238,205,.3), rgba(255,228,185,.1) 45%, rgba(255,228,185,0) 85%); }
+.isik-pus .h { position: absolute; top: 12%; left: 50%; height: 100%; transform-origin: 50% 0%; background: linear-gradient(180deg, rgba(255,238,205,.26), rgba(255,228,185,.08) 45%, rgba(255,228,185,0) 85%); }
+/* Hüzmenin içinde pencereden aşağı doğru akan ışık dalgaları */
+.isik-pus .h::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(255,240,215,0) 0, rgba(255,240,215,.11) 60px, rgba(255,240,215,0) 140px); -webkit-mask-image: linear-gradient(180deg, #000, transparent 80%); mask-image: linear-gradient(180deg, #000, transparent 80%); animation: isikAkisi var(--akis, 6s) linear infinite; }
+.isik-pus .h:nth-child(2n)::after { --akis: 4.5s; }
+.isik-pus .h:nth-child(3n)::after { --akis: 7.5s; }
+@keyframes isikAkisi { from { background-position: 0 0; } to { background-position: 0 140px; } }
+@media (prefers-reduced-motion: reduce) { .isik-pus .h::after { animation: none; } }
 /* Nesnelerin ışığa dönük yüzü (aydınlık) ve öbür yüzü (gölgeli): fotoğrafın kopyası, nesne biçiminde maskelenmiş */
 .nesne-isik, .nesne-golge { position: absolute; inset: 0; pointer-events: none; background-size: 100% 100%; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; opacity: 0; }
 .nesne-isik { filter: brightness(1.2); }

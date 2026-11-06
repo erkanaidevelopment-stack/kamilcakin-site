@@ -118,13 +118,18 @@ if (azHareket) {
     const golgeliler = [...sahne.querySelectorAll<HTMLElement>('[data-nesne-golge]')];
     const masaGolgeleri = [...sahne.querySelectorAll<HTMLElement>('[data-golge]')];
     // Işığın genel durumu: kaynak açısı ve şiddeti; her hüzmenin de kendi küçük titreşimi var
-    const kaynak = { aci: 0, guc: 0.8 };
-    const kaynakDegis = () => gsap.to(kaynak, { aci: rastgele(-18, 18), guc: rastgele(0.35, 1), duration: rastgele(2.2, 4.2), ease: 'sine.inOut', onComplete: kaynakDegis });
+    const kaynak = { aci: 0, guc: 0.8, bulut: 1 };
+    // Ara sıra güneşin önünden bulut geçer: bütün ışık kısa süre kararır, sonra geri gelir
+    const bulutGecir = () => gsap.timeline({ delay: rastgele(3, 7), onComplete: bulutGecir })
+      .to(kaynak, { bulut: rastgele(0.25, 0.55), duration: rastgele(0.9, 1.6), ease: 'sine.inOut' })
+      .to(kaynak, { bulut: 1, duration: rastgele(1.2, 2.2), ease: 'sine.inOut' }, `+=${rastgele(0.2, 0.9)}`);
+    bulutGecir();
+    const kaynakDegis = () => gsap.to(kaynak, { aci: rastgele(-22, 22), guc: rastgele(0.35, 1), duration: rastgele(1.8, 3.4), ease: 'sine.inOut', onComplete: kaynakDegis });
     kaynakDegis();
     const titresim = huzmeler.map((h) => ({ a: 0, x: 0, s: 1, o: Number(h.dataset.op ?? 0.5) }));
     const titret = (i: number) => {
       const temelOp = Number(huzmeler[i].dataset.op ?? 0.5);
-      gsap.to(titresim[i], { a: rastgele(-9, 9), x: rastgele(-45, 45), s: rastgele(0.6, 1.6), o: temelOp * (Math.random() < 0.3 ? rastgele(0.05, 0.3) : rastgele(0.9, 1.9)), duration: rastgele(1.6, 3.6), ease: 'sine.inOut', onComplete: () => titret(i) });
+      gsap.to(titresim[i], { a: rastgele(-9, 9), x: rastgele(-45, 45), s: rastgele(0.6, 1.6), o: temelOp * (Math.random() < 0.35 ? rastgele(0.05, 0.3) : rastgele(0.9, 1.9)), duration: rastgele(1.2, 2.8), ease: 'sine.inOut', onComplete: () => titret(i) });
     };
     huzmeler.forEach((_, i) => titret(i));
 
@@ -135,7 +140,7 @@ if (azHareket) {
       // Hüzmeleri yerleştir
       huzmeler.forEach((h, i) => {
         const t = titresim[i];
-        gsap.set(h, { rotation: Number(h.dataset.aci) + kaynak.aci + t.a, x: t.x, scaleX: t.s, opacity: Math.min(1, t.o * (0.55 + kaynak.guc * 0.6)), transformOrigin: '50% 0%' });
+        gsap.set(h, { rotation: Number(h.dataset.aci) + kaynak.aci + t.a, x: t.x, scaleX: t.s, opacity: Math.min(1, t.o * (0.55 + kaynak.guc * 0.6)) * kaynak.bulut, transformOrigin: '50% 0%' });
       });
       // Her nesneye ne kadar ışık düştüğünü hüzmelerin açısından hesapla
       const ox = W * 0.5, oy = H * 0.12;
@@ -151,7 +156,7 @@ if (azHareket) {
           const f = (aci - hedefAci) / yari;
           toplam += t.o * Math.exp(-f * f);
         });
-        return Math.min(1, toplam * 1.4 * (0.5 + kaynak.guc * 0.6));
+        return Math.min(1, toplam * 1.4 * (0.5 + kaynak.guc * 0.6)) * kaynak.bulut;
       });
       isiklar.forEach((el, j) => { el.style.opacity = String(isikMiktari[j] * 0.6); });
       golgeliler.forEach((el, j) => { el.style.opacity = String((1 - isikMiktari[j]) * 0.45); });
