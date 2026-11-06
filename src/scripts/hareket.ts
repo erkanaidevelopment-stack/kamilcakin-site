@@ -119,12 +119,12 @@ if (azHareket) {
     const masaGolgeleri = [...sahne.querySelectorAll<HTMLElement>('[data-golge]')];
     // Işığın genel durumu: kaynak açısı ve şiddeti; her hüzmenin de kendi küçük titreşimi var
     const kaynak = { aci: 0, guc: 0.8 };
-    const kaynakDegis = () => gsap.to(kaynak, { aci: rastgele(-11, 11), guc: rastgele(0.45, 1), duration: rastgele(3, 6), ease: 'sine.inOut', onComplete: kaynakDegis });
+    const kaynakDegis = () => gsap.to(kaynak, { aci: rastgele(-18, 18), guc: rastgele(0.35, 1), duration: rastgele(2.2, 4.2), ease: 'sine.inOut', onComplete: kaynakDegis });
     kaynakDegis();
     const titresim = huzmeler.map((h) => ({ a: 0, x: 0, s: 1, o: Number(h.dataset.op ?? 0.5) }));
     const titret = (i: number) => {
       const temelOp = Number(huzmeler[i].dataset.op ?? 0.5);
-      gsap.to(titresim[i], { a: rastgele(-5, 5), x: rastgele(-20, 20), s: rastgele(0.75, 1.35), o: temelOp * rastgele(0.5, 1.5), duration: rastgele(2.5, 5.5), ease: 'sine.inOut', onComplete: () => titret(i) });
+      gsap.to(titresim[i], { a: rastgele(-9, 9), x: rastgele(-45, 45), s: rastgele(0.6, 1.6), o: temelOp * (Math.random() < 0.3 ? rastgele(0.05, 0.3) : rastgele(0.9, 1.9)), duration: rastgele(1.6, 3.6), ease: 'sine.inOut', onComplete: () => titret(i) });
     };
     huzmeler.forEach((_, i) => titret(i));
 
