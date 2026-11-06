@@ -6,19 +6,30 @@ const ana = await ayar('anasayfa');
 const kacis = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
 const slogan = kacis(String(ana.slogan ?? '')).replace(/\*(.+?)\*/g, '<em>$1</em>');
 const istatistikler: { sayi: string; etiket: string }[] = ana.istatistikler ?? [];
+// Fotoğraftaki pencereden yayılan, sayfa açıkken yavaşça ve rastgele salınan ışık hüzmeleri
+const huzmeler = [
+  { aci: 38, w: 70, o: 0.55, b: 14 }, { aci: 24, w: 130, o: 0.5, b: 22 }, { aci: 10, w: 50, o: 0.6, b: 10 },
+  { aci: -6, w: 110, o: 0.45, b: 20 }, { aci: -20, w: 60, o: 0.55, b: 12 }, { aci: -34, w: 140, o: 0.4, b: 26 },
+];
+// Işığın içinde süzülen toz zerrecikleri (her derlemede aynı dizilim için sabit tohumla)
+let tohum = 7;
+const rnd = () => { tohum = (tohum * 9301 + 49297) % 233280; return tohum / 233280; };
+const zerreler = Array.from({ length: 22 }, () => ({
+  t: Math.round(14 + rnd() * 62), l: Math.round(30 + rnd() * 42), s: Math.round(2 + rnd() * 3), o: (0.45 + rnd() * 0.5).toFixed(2),
+}));
 ---
 <section class="kahraman" aria-labelledby="kahraman-baslik">
   {ana.gorsel && (
     <div class="kahraman-gorsel" data-paralaks>
       <img src={u(ana.gorsel)} alt={ana.gorselAciklamasi ?? ''} fetchpriority="high" decoding="async" />
+      <div class="kahraman-isik" aria-hidden="true">
+        {huzmeler.map((h) => <div class="h" data-aci={h.aci} style={`width: ${h.w}px; transform: rotate(${h.aci}deg); opacity: ${h.o}; filter: blur(${h.b}px)`}></div>)}
+      </div>
       <div class="golge g-sol"></div>
       <div class="golge g-alt"></div>
       <div class="golge g-ust"></div>
       <div class="golge g-sag"></div>
-      <span class="zerre" style="top: 34%; left: 44%; width: 4px; height: 4px"></span>
-      <span class="zerre" style="top: 48%; left: 38%; width: 3px; height: 3px; animation-delay: -4s"></span>
-      <span class="zerre" style="top: 26%; left: 56%; width: 2px; height: 2px; animation-delay: -8s"></span>
-      <span class="zerre" style="top: 58%; left: 61%; width: 3px; height: 3px; animation-delay: -6s"></span>
+      {zerreler.map((z) => <span class="zerre" style={`top: ${z.t}%; left: ${z.l}%; width: ${z.s}px; height: ${z.s}px; opacity: ${z.o}`}></span>)}
     </div>
   )}
   <div class="kahraman-icerik">

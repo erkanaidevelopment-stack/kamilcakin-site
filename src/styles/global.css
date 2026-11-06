@@ -124,6 +124,10 @@ a:hover { color: #4F3B0E; }
 .kahraman-gorsel { position: absolute; top: 0; right: 0; bottom: 0; width: 70%; z-index: 0; }
 .kahraman-gorsel img { width: 100%; height: 100%; object-fit: cover; object-position: 55% 40%; }
 .kahraman-gorsel .golge { position: absolute; inset: 0; pointer-events: none; }
+.kahraman-isik { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; overflow: hidden; }
+.kahraman-isik .h { position: absolute; top: 9%; left: 50%; height: 115%; margin-left: -40px; transform-origin: top center; background: linear-gradient(180deg, rgba(255,226,160,.6), rgba(255,214,140,.2) 45%, rgba(255,214,140,0) 85%); }
+@media (max-width: 900px) { .kahraman-isik .h { top: 6%; height: 105%; } }
+.hareketli .isik .h, .hareketli .zerre { animation: none; }
 .kahraman-gorsel .g-sol { background: linear-gradient(90deg, var(--murekkep) 0%, rgba(14,21,19,.9) 10%, rgba(14,21,19,.55) 20%, rgba(14,21,19,0) 34%); }
 .kahraman-gorsel .g-alt { background: linear-gradient(0deg, var(--murekkep) 0%, rgba(14,21,19,.75) 12%, rgba(14,21,19,0) 32%); }
 .kahraman-gorsel .g-ust { background: linear-gradient(180deg, rgba(14,21,19,.85) 0%, rgba(14,21,19,0) 20%); }

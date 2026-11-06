@@ -90,6 +90,45 @@ if (azHareket) {
     gsap.to(o, { v: hedef, duration: 1.8, delay: 0.8, ease: 'power2.out', onUpdate: () => { el.textContent = `${Math.round(o.v)}${ek}`; } });
   });
 
+  // Işık hüzmeleri: her biri kendi hızında, rastgele salınır, kayar ve parlayıp söner
+  kok.classList.add('hareketli');
+  const rastgele = gsap.utils.random;
+  const salin = (el: HTMLElement, temel: number, genis: boolean) => {
+    gsap.to(el, {
+      rotation: temel + rastgele(-7, 7),
+      x: rastgele(genis ? -70 : -30, genis ? 70 : 30),
+      scaleX: rastgele(0.6, 1.5),
+      opacity: rastgele(0.3, 1),
+      duration: rastgele(3.5, 8),
+      ease: 'sine.inOut',
+      onComplete: () => salin(el, temel, genis),
+    });
+  };
+  document.querySelectorAll<HTMLElement>('.isik .h, .kahraman-isik .h').forEach((el) => {
+    const temel = Number(el.dataset.aci ?? 0);
+    gsap.set(el, { rotation: temel, transformOrigin: '50% 0%' });
+    gsap.delayedCall(rastgele(0, 2), () => salin(el, temel, !el.closest('.kahraman-isik')));
+  });
+
+  // Toz zerrecikleri: ışığın içinde rastgele yönlere süzülür ve parıldar
+  const suzul = (el: HTMLElement) => {
+    gsap.to(el, {
+      x: `+=${rastgele(-40, 40)}`,
+      y: `+=${rastgele(-35, 25)}`,
+      opacity: rastgele(0.15, 1),
+      scale: rastgele(0.6, 1.6),
+      duration: rastgele(3, 7),
+      ease: 'sine.inOut',
+      onComplete: () => {
+        // çok uzaklaşan zerreyi yumuşakça başlangıç noktasına yakın tut
+        const x = Number(gsap.getProperty(el, 'x')); const y = Number(gsap.getProperty(el, 'y'));
+        if (Math.abs(x) > 90 || Math.abs(y) > 90) gsap.to(el, { x: 0, y: 0, opacity: 0, duration: 2.5, onComplete: () => suzul(el) });
+        else suzul(el);
+      },
+    });
+  };
+  document.querySelectorAll<HTMLElement>('.zerre').forEach((el) => gsap.delayedCall(rastgele(0, 3), () => suzul(el)));
+
   // Kaydırdıkça beliren öğeler
   gsap.utils.toArray<HTMLElement>('[data-belir]').forEach((el) => {
     gsap.fromTo(el, { opacity: 0, y: 28 }, {
