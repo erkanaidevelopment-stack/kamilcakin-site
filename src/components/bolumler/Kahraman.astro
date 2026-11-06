@@ -6,10 +6,17 @@ const ana = await ayar('anasayfa');
 const kacis = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
 const slogan = kacis(String(ana.slogan ?? '')).replace(/\*(.+?)\*/g, '<em>$1</em>');
 const istatistikler: { sayi: string; etiket: string }[] = ana.istatistikler ?? [];
-// Fotoğraftaki pencereden yayılan, sayfa açıkken yavaşça ve rastgele salınan ışık hüzmeleri
+// Fotoğraftaki pencereden yayılan, rastgele salınan ışık hüzmeleri.
+// Her hüzme iki katmanda çizilir: "pus" havadaki ışık, "vurgu" ise üzerinden geçtiği nesneyi aydınlatır.
 const huzmeler = [
-  { aci: 38, w: 70, o: 0.55, b: 14 }, { aci: 24, w: 130, o: 0.5, b: 22 }, { aci: 10, w: 50, o: 0.6, b: 10 },
-  { aci: -6, w: 110, o: 0.45, b: 20 }, { aci: -20, w: 60, o: 0.55, b: 12 }, { aci: -34, w: 140, o: 0.4, b: 26 },
+  { aci: 46, w: 90, o: 0.7, b: 16 }, { aci: 30, w: 150, o: 0.6, b: 26 }, { aci: 15, w: 70, o: 0.8, b: 12 },
+  { aci: 4, w: 120, o: 0.75, b: 20 }, { aci: -9, w: 60, o: 0.7, b: 10 }, { aci: -24, w: 130, o: 0.6, b: 24 },
+  { aci: -40, w: 100, o: 0.7, b: 18 },
+];
+// Işığın vurduğunda parlayan noktalar (fotoğraf üzerinde yüzde konum): saçlar, açık kitap, yaldızlı ciltler
+const hedefler = [
+  { x: 48.5, y: 46, r: 14 }, { x: 49.8, y: 81, r: 20 }, { x: 46, y: 64, r: 16 },
+  { x: 77, y: 70, r: 18 }, { x: 88, y: 72, r: 16 }, { x: 14, y: 72, r: 18 }, { x: 31, y: 85, r: 14 },
 ];
 // Işığın içinde süzülen toz zerrecikleri (her derlemede aynı dizilim için sabit tohumla)
 let tohum = 7;
@@ -20,16 +27,24 @@ const zerreler = Array.from({ length: 22 }, () => ({
 ---
 <section class="kahraman" aria-labelledby="kahraman-baslik">
   {ana.gorsel && (
-    <div class="kahraman-gorsel" data-paralaks>
-      <img src={u(ana.gorsel)} alt={ana.gorselAciklamasi ?? ''} fetchpriority="high" decoding="async" />
-      <div class="kahraman-isik" aria-hidden="true">
-        {huzmeler.map((h) => <div class="h" data-aci={h.aci} style={`width: ${h.w}px; transform: rotate(${h.aci}deg); opacity: ${h.o}; filter: blur(${h.b}px)`}></div>)}
+    <div class="kahraman-gorsel">
+      <div class="sahne" data-sahne>
+        <img src={u(ana.gorsel)} alt={ana.gorselAciklamasi ?? ''} fetchpriority="high" decoding="async" />
+        <div class="isik-vurgu" aria-hidden="true">
+          {huzmeler.map((h, i) => <div class="h" data-huzme={i} data-aci={h.aci} style={`width: ${h.w * 1.3}px; margin-left: -${h.w * 0.65}px; transform: rotate(${h.aci}deg); opacity: ${h.o}; filter: blur(${h.b * 1.4}px)`}></div>)}
+        </div>
+        <div class="isik-pus" aria-hidden="true">
+          {huzmeler.map((h, i) => <div class="h" data-huzme={i} data-aci={h.aci} data-gen={h.w} style={`width: ${h.w}px; margin-left: -${h.w / 2}px; transform: rotate(${h.aci}deg); opacity: ${h.o}; filter: blur(${h.b}px)`}></div>)}
+        </div>
+        <div aria-hidden="true">
+          {hedefler.map((p) => <span class="parlama" data-hedef data-x={p.x} data-y={p.y} style={`left: ${p.x}%; top: ${p.y}%; width: ${p.r}%`}></span>)}
+        </div>
+        {zerreler.map((z) => <span class="zerre" style={`top: ${z.t}%; left: ${z.l}%; width: ${z.s}px; height: ${z.s}px; opacity: ${z.o}`}></span>)}
       </div>
       <div class="golge g-sol"></div>
       <div class="golge g-alt"></div>
       <div class="golge g-ust"></div>
       <div class="golge g-sag"></div>
-      {zerreler.map((z) => <span class="zerre" style={`top: ${z.t}%; left: ${z.l}%; width: ${z.s}px; height: ${z.s}px; opacity: ${z.o}`}></span>)}
     </div>
   )}
   <div class="kahraman-icerik">

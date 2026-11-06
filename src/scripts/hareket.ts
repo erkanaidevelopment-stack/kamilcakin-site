@@ -74,10 +74,10 @@ if (azHareket) {
   if (giris.length) {
     gsap.fromTo(giris, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.12, delay: 0.15 });
   }
-  const gorsel = document.querySelector<HTMLElement>('[data-paralaks] img');
-  if (gorsel) {
-    gsap.fromTo(gorsel, { scale: 1.08, opacity: 0 }, { scale: 1, opacity: 1, duration: 2.2, ease: 'power2.out' });
-    gsap.to(gorsel, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: gorsel, start: 'top top', end: 'bottom top', scrub: true } });
+  const sahne = document.querySelector<HTMLElement>('[data-sahne]');
+  if (sahne) {
+    gsap.fromTo(sahne, { scale: 1.08, opacity: 0 }, { scale: 1, opacity: 1, duration: 2.2, ease: 'power2.out' });
+    gsap.to(sahne, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: sahne.parentElement, start: 'top top', end: 'bottom top', scrub: true } });
   }
 
   // Sayılar yukarı doğru sayar
@@ -104,11 +104,59 @@ if (azHareket) {
       onComplete: () => salin(el, temel, genis),
     });
   };
-  document.querySelectorAll<HTMLElement>('.isik .h, .kahraman-isik .h').forEach((el) => {
+  document.querySelectorAll<HTMLElement>('.isik .h').forEach((el) => {
     const temel = Number(el.dataset.aci ?? 0);
     gsap.set(el, { rotation: temel, transformOrigin: '50% 0%' });
-    gsap.delayedCall(rastgele(0, 2), () => salin(el, temel, !el.closest('.kahraman-isik')));
+    gsap.delayedCall(rastgele(0, 2), () => salin(el, temel, true));
   });
+
+  // Ana sayfa fotoğrafı: pencereden düşen hüzmeler salınır; üzerinden geçtikleri nesneleri aydınlatır
+  if (sahne) {
+    const pus = [...sahne.querySelectorAll<HTMLElement>('.isik-pus .h')];
+    const vurgu = [...sahne.querySelectorAll<HTMLElement>('.isik-vurgu .h')];
+    const hedefler = [...sahne.querySelectorAll<HTMLElement>('[data-hedef]')];
+    const salinSahne = (i: number, temel: number) => {
+      // Aynı rastgele değerler hem havadaki ışığa hem nesne üzerindeki aydınlığa uygulanır
+      gsap.to([pus[i], vurgu[i]], {
+        rotation: temel + rastgele(-12, 12),
+        x: rastgele(-25, 25),
+        scaleX: rastgele(0.7, 1.4),
+        opacity: rastgele(0.25, 1),
+        duration: rastgele(3, 7),
+        ease: 'sine.inOut',
+        onComplete: () => salinSahne(i, temel),
+      });
+    };
+    pus.forEach((el, i) => {
+      const temel = Number(el.dataset.aci ?? 0);
+      gsap.set([el, vurgu[i]], { rotation: temel, transformOrigin: '50% 0%' });
+      gsap.delayedCall(rastgele(0, 1.5), () => salinSahne(i, temel));
+    });
+
+    // Bir hüzme bir nesnenin üzerinden geçerken o nesne parlar; ışık ayrılınca söner
+    const RAD = 180 / Math.PI;
+    const hedefParla = hedefler.map((h) => gsap.quickTo(h, 'opacity', { duration: 0.6, ease: 'power2.out' }));
+    gsap.ticker.add(() => {
+      const W = sahne.offsetWidth, H = sahne.offsetHeight;
+      if (!W || !H) return;
+      const ox = W * 0.5, oy = H * 0.12;
+      hedefler.forEach((h, j) => {
+        const tx = (Number(h.dataset.x) / 100) * W, ty = (Number(h.dataset.y) / 100) * H;
+        let isik = 0;
+        pus.forEach((b) => {
+          const bx = Number(gsap.getProperty(b, 'x'));
+          const dx = tx - ox - bx, dy = ty - oy;
+          const uzaklik = Math.hypot(dx, dy) || 1;
+          const hedefAci = -Math.atan2(dx, dy) * RAD;
+          const aci = Number(gsap.getProperty(b, 'rotation'));
+          const yari = Math.max(2.5, Math.atan(((Number(b.dataset.gen) || 80) * Number(gsap.getProperty(b, 'scaleX'))) / 2 / uzaklik) * RAD);
+          const fark = (aci - hedefAci) / yari;
+          isik += Number(gsap.getProperty(b, 'opacity')) * Math.exp(-fark * fark);
+        });
+        hedefParla[j](Math.min(1, isik * 1.1));
+      });
+    });
+  }
 
   // Toz zerrecikleri: ışığın içinde rastgele yönlere süzülür ve parıldar
   const suzul = (el: HTMLElement) => {
