@@ -153,8 +153,8 @@ if (azHareket) {
         });
         return Math.min(1, toplam * 1.4 * (0.5 + kaynak.guc * 0.6));
       });
-      isiklar.forEach((el, j) => { el.style.opacity = String(isikMiktari[j] * 0.85); });
-      golgeliler.forEach((el, j) => { el.style.opacity = String((1 - isikMiktari[j]) * 0.6); });
+      isiklar.forEach((el, j) => { el.style.opacity = String(isikMiktari[j] * 0.6); });
+      golgeliler.forEach((el, j) => { el.style.opacity = String((1 - isikMiktari[j]) * 0.45); });
       // Masadaki gölgeler ışığın tersine kayar, ışık güçlendikçe belirginleşir
       masaGolgeleri.forEach((el) => {
         const n = Number(el.dataset.nesne);
