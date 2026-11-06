@@ -120,7 +120,7 @@ a:hover { color: #4F3B0E; }
 @media (min-width: 1081px) { .menu-kapat { display: none !important; } }
 
 /* ---------- Ana sayfa üst bölüm ---------- */
-.kahraman { position: relative; overflow: hidden; background: var(--murekkep); color: var(--krem); min-height: min(940px, 100svh); display: flex; align-items: center; }
+.kahraman { position: relative; overflow: hidden; background: var(--murekkep); color: var(--krem); height: min(900px, 100svh); min-height: 600px; display: flex; align-items: center; }
 .kahraman-gorsel { position: absolute; top: 0; right: 0; bottom: 0; width: 70%; z-index: 0; }
 .kahraman-gorsel { container-type: size; overflow: hidden; }
 /* Sahne: fotoğrafla aynı en-boy oranında, alanı tamamen kaplar; ışıklar fotoğraftaki nesnelere göre yerleşir */
@@ -139,21 +139,21 @@ a:hover { color: #4F3B0E; }
 .kahraman-gorsel .g-alt { background: linear-gradient(0deg, var(--murekkep) 0%, rgba(14,21,19,.75) 12%, rgba(14,21,19,0) 32%); }
 .kahraman-gorsel .g-ust { background: linear-gradient(180deg, rgba(14,21,19,.85) 0%, rgba(14,21,19,0) 20%); }
 .kahraman-gorsel .g-sag { background: linear-gradient(270deg, rgba(14,21,19,.6) 0%, rgba(14,21,19,0) 14%); }
-.kahraman-icerik { position: relative; z-index: 2; width: 100%; padding-top: 150px; padding-bottom: 110px; }
-.kahraman-metin { max-width: 640px; display: flex; flex-direction: column; gap: 26px; }
+.kahraman-icerik { position: relative; z-index: 2; width: 100%; padding-top: clamp(84px, 12vh, 130px); padding-bottom: clamp(28px, 6vh, 80px); }
+.kahraman-metin { max-width: 640px; display: flex; flex-direction: column; gap: clamp(12px, 2.3vh, 24px); }
 .kahraman h1 { margin: 0; display: flex; flex-direction: column; gap: 4px; }
 .kahraman h1 small { font-size: clamp(16px, 1.7vw, 22px); font-weight: 700; letter-spacing: 9px; text-transform: uppercase; color: var(--altin); }
-.yaldiz { font-family: var(--serif-baslik); font-weight: 700; font-size: clamp(54px, 8vw, 112px); line-height: .95; letter-spacing: -1px; background: linear-gradient(180deg, #FFF4D2 0%, #F1D88E 38%, #CFA548 72%, #A47F2F 100%); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 26px rgba(0,0,0,.55)); padding-bottom: .06em; white-space: nowrap; }
-.slogan { margin: 0; font-family: var(--serif-baslik); font-size: clamp(28px, 3vw, 40px); font-weight: 500; line-height: 1.15; color: var(--krem-2); }
+.yaldiz { font-family: var(--serif-baslik); font-weight: 700; font-size: clamp(54px, min(8vw, 12.5vh), 112px); line-height: .95; letter-spacing: -1px; background: linear-gradient(180deg, #FFF4D2 0%, #F1D88E 38%, #CFA548 72%, #A47F2F 100%); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 26px rgba(0,0,0,.55)); padding-bottom: .06em; white-space: nowrap; }
+.slogan { margin: 0; font-family: var(--serif-baslik); font-size: clamp(26px, min(3vw, 4.6vh), 40px); font-weight: 500; line-height: 1.15; color: var(--krem-2); }
 .slogan em { color: var(--altin-acik); }
-.kahraman .aciklama { margin: 0; max-width: 500px; font-size: 18px; line-height: 1.65; color: #D6CDB9; }
+.kahraman .aciklama { margin: 0; max-width: 520px; font-size: clamp(16px, 2.1vh, 18px); line-height: 1.6; color: #D6CDB9; }
 .dugmeler { display: flex; flex-wrap: wrap; gap: 14px; }
-.sayilar { display: flex; flex-wrap: wrap; gap: 36px; padding-top: 22px; border-top: 1px solid rgba(212,175,90,.25); }
+.sayilar { display: flex; flex-wrap: wrap; gap: 36px; padding-top: clamp(12px, 2vh, 22px); border-top: 1px solid rgba(212,175,90,.25); }
 .sayilar div { display: flex; flex-direction: column; gap: 2px; }
-.sayilar b { font-family: var(--serif-baslik); font-size: 40px; font-weight: 600; color: var(--altin-acik); line-height: 1.1; }
+.sayilar b { font-family: var(--serif-baslik); font-size: clamp(30px, 4.4vh, 40px); font-weight: 600; color: var(--altin-acik); line-height: 1.1; }
 .sayilar span { font-size: 13px; color: #C4BBA7; }
 @media (max-width: 900px) {
-  .kahraman { display: block; min-height: 0; }
+  .kahraman { display: block; min-height: 0; height: auto; }
   .kahraman-gorsel { position: relative; width: 100%; aspect-ratio: 16 / 11; }
   .kahraman-gorsel .g-sol { display: none; }
   .kahraman-gorsel .g-ust { background: linear-gradient(180deg, rgba(14,21,19,.95) 0%, rgba(14,21,19,.6) 22%, rgba(14,21,19,0) 42%); }
