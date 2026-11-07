@@ -75,5 +75,7 @@ const atif = (y: any) => `${soyad}, ${adlar}. “${y.data.baslik}”. ${y.data.k
       uygula();
     }));
     ara?.addEventListener('input', uygula);
+    const istenen = new URLSearchParams(location.search).get('konu');
+    if (istenen) cipler.find((c) => c.dataset.konu === istenen)?.click();
   });
 </script>

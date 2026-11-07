@@ -137,6 +137,7 @@ collections:
     fields:
       - { label: "Başlık", name: baslik, widget: string }
       - { label: "Açıklama", name: aciklama, widget: text, required: false }
+      - { label: "İlgili yayın konusu", name: konu, widget: select, required: false, options: ["Buhârî", "Hadis Tarihi", "Hadis Usulü", "Hadis Karşıtlığı", "Kadın", "Fiten", "Din ve Toplum", "Dinler Tarihi", "Diğer"], hint: "Seçilirse kart tıklanınca o konudaki yayınlar açılır." }
       - *sira
       - *yayinda
 

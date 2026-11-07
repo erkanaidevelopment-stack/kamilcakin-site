@@ -188,7 +188,9 @@ a:hover { color: #4F3B0E; }
 /* ---------- Alanlar ---------- */
 .izgara-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px; }
 .alan { display: flex; flex-direction: column; gap: 14px; padding: 30px; border-radius: 16px; background: var(--parsomen); border: 1px solid var(--cizgi); transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
-.alan:hover { transform: translateY(-4px); box-shadow: 0 24px 40px -28px rgba(60,40,10,.5); border-color: #CDBF9F; }
+a.alan { text-decoration: none; color: inherit; }
+a.alan:hover { color: inherit; transform: translateY(-4px); box-shadow: 0 24px 40px -28px rgba(60,40,10,.5); border-color: #CDBF9F; }
+.alan .git { margin-top: auto; font-size: 14px; font-weight: 600; color: var(--altin-koyu); }
 .alan .no { font-family: var(--serif-baslik); font-size: 34px; font-weight: 600; color: var(--altin-yazi); line-height: 1; }
 .alan h3 { margin: 0; font-family: var(--serif-baslik); font-size: 27px; font-weight: 600; line-height: 1.15; }
 .alan p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--metin-3); }
@@ -229,7 +231,7 @@ a:hover { color: #4F3B0E; }
 .klasik p { margin: 6px 0 0; font-size: 14px; line-height: 1.55; color: #B9B09C; }
 
 /* ---------- Kitaplar ---------- */
-.kitap-dizi { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 36px 40px; }
+.kitap-dizi { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 36px 40px; }
 .kitap { display: flex; flex-direction: column; gap: 16px; align-items: center; width: 184px; text-decoration: none; }
 .kapak { width: 184px; height: 264px; padding: 14px; border-radius: 3px 10px 10px 3px; box-shadow: 0 34px 50px -22px rgba(0,0,0,.6), inset 0 0 0 1px rgba(0,0,0,.4); position: relative; overflow: hidden; transition: transform .4s ease; }
 .kitap:hover .kapak { transform: translateY(-6px) rotate(-1deg); }

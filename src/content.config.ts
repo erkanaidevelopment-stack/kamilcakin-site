@@ -84,6 +84,7 @@ const alanlar = defineCollection({
   schema: z.object({
     baslik: z.string(),
     aciklama: z.string().default(''),
+    konu: z.string().optional(),
     sira,
     yayinda,
   }),

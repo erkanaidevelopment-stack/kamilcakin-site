@@ -1,22 +1,30 @@
 ---
-import { siraliYayindakiler } from '../../lib/site';
+import { siraliYayindakiler, yayinlarSirali, u } from '../../lib/site';
 import BolumBasi from '../BolumBasi.astro';
 interface Props { b: any }
 const { b } = Astro.props;
 const alanlar = await siraliYayindakiler('alanlar');
+// Bir alana yayın konusu bağlanmışsa kart, o konudaki yayınlara götürür ve kaç yayın olduğunu gösterir
+const yayinlar = await yayinlarSirali();
+const sayi = (k?: string) => (k ? yayinlar.filter((y) => y.data.konu === k).length : 0);
 ---
 {alanlar.length > 0 && (
   <section class="bolum acik" aria-labelledby="alanlar">
     <div class="kap">
       <BolumBasi id="alanlar" ust={b.ustBaslik} baslik={b.baslik} aciklama={b.aciklama} />
       <div class="izgara-3">
-        {alanlar.map((a, i) => (
-          <div class="alan" data-belir>
-            <span class="no">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{a.data.baslik}</h3>
-            {a.data.aciklama && <p>{a.data.aciklama}</p>}
-          </div>
-        ))}
+        {alanlar.map((a, i) => {
+          const n = sayi(a.data.konu);
+          const Etiket = n > 0 ? 'a' : 'div';
+          return (
+            <Etiket class="alan" href={n > 0 ? u(`/yayinlar/?konu=${encodeURIComponent(a.data.konu!)}`) : undefined} data-belir>
+              <span class="no">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{a.data.baslik}</h3>
+              {a.data.aciklama && <p>{a.data.aciklama}</p>}
+              {n > 0 && <span class="git">{n} yayın →</span>}
+            </Etiket>
+          );
+        })}
       </div>
     </div>
   </section>
